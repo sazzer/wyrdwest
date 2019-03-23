@@ -29,6 +29,7 @@ require (
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pty v1.1.4 // indirect
+	github.com/labstack/echo/v4 v4.0.0
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -44,7 +45,6 @@ require (
 	github.com/spf13/cobra v0.0.3 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.3.2 // indirect
-	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780 // indirect
 	golang.org/x/crypto v0.0.0-20190320223903-b7391e95e576 // indirect
 	golang.org/x/net v0.0.0-20190322120337-addf6b3196f6 // indirect
