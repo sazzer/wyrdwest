@@ -1,21 +1,27 @@
 package main
 
 import (
-	"net/http"
+	"errors"
 
-	"github.com/labstack/echo/v4"
+	"github.com/sazzer/wyrdwest/service/internal/health"
 	"github.com/sazzer/wyrdwest/service/internal/server"
 	"github.com/sirupsen/logrus"
 )
 
+type dummyHealth struct {
+}
+
+func (d dummyHealth) CheckHealth() error {
+	return errors.New("Oops")
+}
+
 func main() {
+	healthchecker := health.New()
+	healthchecker.AddHealthcheck("dummy", dummyHealth{})
+
 	server := server.New()
 
-	server.Register(func(e *echo.Echo) {
-		e.GET("/", func(c echo.Context) error {
-			return c.String(http.StatusOK, "Hello, World!")
-		})
-	})
+	server.Register(health.RegisterHandler(&healthchecker))
 
 	if err := server.Start(3000); err != nil {
 		logrus.WithError(err).Error("Failed to start server")
