@@ -3,6 +3,7 @@ GO111MODULE=on
 
 clean:
 	rm -rf output
+	rm -rf vendor
 
 all: get-deps lint test
 	go build -o output/wyrdwest-service github.com/sazzer/wyrdwest/service/cmd/service
@@ -25,3 +26,9 @@ get-deps:
 	go install github.com/golang/mock/mockgen
 	go generate github.com/sazzer/wyrdwest/service/...
 	mkdir -p output
+
+docker: clean lint test
+	go mod vendor
+	docker build -t uk.co.grahamcox.wyrdwest.service/wyrdwest-service:latest .
+	rm -rf vendor
+
