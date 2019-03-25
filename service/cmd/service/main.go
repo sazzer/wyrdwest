@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 
+	"github.com/paked/configure"
 	"github.com/sazzer/wyrdwest/service/internal/health"
 	"github.com/sazzer/wyrdwest/service/internal/server"
 	"github.com/sirupsen/logrus"
@@ -16,6 +17,14 @@ func (d dummyHealth) CheckHealth() error {
 }
 
 func main() {
+	conf := configure.New()
+	port := conf.Int("port", 3000, "The port to listen on")
+
+	conf.Use(configure.NewFlag())
+	conf.Use(configure.NewEnvironment())
+
+	conf.Parse()
+
 	healthchecker := health.New()
 	healthchecker.AddHealthcheck("dummy", dummyHealth{})
 
@@ -23,7 +32,7 @@ func main() {
 
 	server.Register(health.RegisterHandler(&healthchecker))
 
-	if err := server.Start(3000); err != nil {
+	if err := server.Start(*port); err != nil {
 		logrus.WithError(err).Error("Failed to start server")
 	}
 }

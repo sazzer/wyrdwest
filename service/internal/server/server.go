@@ -37,7 +37,7 @@ func (server *Server) Register(handlers HandlerRegistrationFunc) {
 }
 
 // Start will start the server listening
-func (server *Server) Start(port uint16) error {
+func (server *Server) Start(port int) error {
 	address := fmt.Sprintf(":%d", port)
 	return server.server.Start(address)
 }

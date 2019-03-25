@@ -36,6 +36,7 @@ require (
 	github.com/nbutton23/zxcvbn-go v0.0.0-20180912185939-ae427f1e4c1d // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0
+	github.com/paked/configure v0.0.0-20190218140148-28f9c3f21a44
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/rogpeppe/go-internal v1.2.2 // indirect
 	github.com/shirou/gopsutil v2.18.12+incompatible // indirect
