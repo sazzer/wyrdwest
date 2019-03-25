@@ -1,0 +1,32 @@
+version: '3'
+services:
+    wyrdwest-postgres:
+        image: postgres:10.6-alpine
+        environment:
+            POSTGRES_DB: wyrdwest
+            POSTGRES_USER: wyrdwest
+            POSTGRES_PASSWORD: wyrdwest
+        ports:
+            - "127.0.0.1:35432:5432"
+        networks:
+            - wyrdwest-dev
+    wyrdwest-phppgadmin:
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: graham@grahamcox.co.uk
+            PGADMIN_DEFAULT_PASSWORD: wyrdwest
+        ports:
+            - "127.0.0.1:38090:80"
+        networks:
+            - wyrdwest-dev
+    wyrdwest-service:
+        image: uk.co.grahamcox.wyrdwest.service/wyrdwest-service:latest
+        environment: 
+            PORT: 8080
+        ports:
+            - "127.0.0.1:38080:8080"
+        networks:
+            - wyrdwest-dev
+networks:
+    wyrdwest-dev:
+

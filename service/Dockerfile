@@ -3,8 +3,8 @@ FROM golang:alpine AS build-env
 
 RUN apk add --no-cache git mercurial
 
-ADD . /go/src/github.com/sazzer/wyrdwest
-WORKDIR /go/src/github.com/sazzer/wyrdwest
+ADD . /go/src/github.com/sazzer/service/wyrdwest
+WORKDIR /go/src/github.com/sazzer/service/wyrdwest
 
 ENV GO111MODULE=on
 ENV GOPATH=/go
