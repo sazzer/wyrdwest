@@ -24,6 +24,7 @@ services:
         environment: 
             PORT: 8080
             DB_URL: postgres://wyrdwest:wyrdwest@wyrdwest-postgres/wyrdwest?sslmode=disable
+            DOCKERIZE_PGSQL: tcp://wyrdwest-postgres:5432
         ports:
             - "127.0.0.1:38080:8080"
         networks:
