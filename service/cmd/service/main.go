@@ -1,11 +1,8 @@
 package main
 
 import (
-	"database/sql"
-
 	_ "github.com/lib/pq"
 	"github.com/paked/configure"
-	"github.com/sazzer/wyrdwest/service/internal/database"
 	"github.com/sazzer/wyrdwest/service/internal/health"
 	"github.com/sazzer/wyrdwest/service/internal/server"
 	"github.com/sirupsen/logrus"
@@ -21,15 +18,9 @@ func main() {
 
 	conf.Parse()
 
-	healthchecker := health.New()
+	db := buildDatabase(*dbURL)
 
-	dbConn, err := sql.Open("postgres", *dbURL)
-	if err != nil {
-		logrus.WithError(err).Error("Failed to connect to database")
-		panic(err)
-	}
-	db := database.NewFromDB(dbConn)
-	logrus.WithField("db", db).Info("Connected to database")
+	healthchecker := health.New()
 	healthchecker.AddHealthcheck("database", db)
 
 	server := server.New()

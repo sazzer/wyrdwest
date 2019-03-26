@@ -16,6 +16,7 @@ require (
 	github.com/go-toolsmith/astp v1.0.0 // indirect
 	github.com/go-toolsmith/pkgload v1.0.0 // indirect
 	github.com/go-toolsmith/typep v1.0.0 // indirect
+	github.com/gobuffalo/packr v1.24.0
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/mock v1.2.0
 	github.com/golang/protobuf v1.3.1 // indirect
@@ -39,22 +40,20 @@ require (
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0
 	github.com/paked/configure v0.0.0-20190218140148-28f9c3f21a44
-	github.com/pkg/errors v0.8.1 // indirect
-	github.com/rogpeppe/go-internal v1.2.2 // indirect
+	github.com/rubenv/sql-migrate v0.0.0-20190212093014-1007f53448d7
 	github.com/shirou/gopsutil v2.18.12+incompatible // indirect
 	github.com/shurcooL/go v0.0.0-20190121191506-3fef8c783dec // indirect
 	github.com/sirupsen/logrus v1.4.0
 	github.com/spf13/afero v1.2.1 // indirect
-	github.com/spf13/cobra v0.0.3 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.3.2 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780 // indirect
 	golang.org/x/crypto v0.0.0-20190320223903-b7391e95e576 // indirect
 	golang.org/x/net v0.0.0-20190322120337-addf6b3196f6 // indirect
-	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
 	golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc // indirect
 	golang.org/x/tools v0.0.0-20190322203728-c1a832b0ad89 // indirect
+	gopkg.in/gorp.v1 v1.7.2 // indirect
 	mvdan.cc/unparam v0.0.0-20190310220240-1b9ccfa71afe // indirect
 	sourcegraph.com/sqs/pbtypes v1.0.0 // indirect
 )

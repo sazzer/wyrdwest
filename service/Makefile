@@ -1,9 +1,10 @@
 .DEFAULT_GOAL=all
 GO111MODULE=on
 
-clean:
+clean: get-packr
 	rm -rf output
 	rm -rf vendor
+	packr clean
 
 all: get-deps lint test
 	go build -o output/wyrdwest-service github.com/sazzer/wyrdwest/service/cmd/service
@@ -20,15 +21,20 @@ test: get-deps lint
 cover-report: test
 	go tool cover -html=output/coverage.out
 
-get-deps:
+get-deps: get-packr
 	go get
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	go install github.com/golang/mock/mockgen
 	go generate github.com/sazzer/wyrdwest/service/...
 	mkdir -p output
 
+get-packr:
+	go get github.com/gobuffalo/packr/packr
+
 docker: clean lint test
 	go mod vendor
+	packr
 	docker build -t uk.co.grahamcox.wyrdwest.service/wyrdwest-service:latest .
 	rm -rf vendor
+	packr clean
 
