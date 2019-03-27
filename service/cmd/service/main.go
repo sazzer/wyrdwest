@@ -20,11 +20,10 @@ func main() {
 
 	db := buildDatabase(*dbURL)
 
-	healthchecker := health.New()
-	healthchecker.AddHealthcheck("database", db)
-
 	server := server.New()
 
+	healthchecker := health.New()
+	healthchecker.AddHealthcheck("database", db)
 	server.Register(health.RegisterHandler(&healthchecker))
 
 	if err := server.Start(*port); err != nil {
