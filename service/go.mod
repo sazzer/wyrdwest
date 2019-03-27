@@ -28,6 +28,7 @@ require (
 	github.com/golangci/gosec v0.0.0-20180901114220-8afd9cbb6cfb // indirect
 	github.com/golangci/lint-1 v0.0.0-20181222135242-d2cdd8c08219 // indirect
 	github.com/golangci/revgrep v0.0.0-20180812185044-276a5c0a1039 // indirect
+	github.com/jmoiron/sqlx v1.2.0
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pty v1.1.4 // indirect
@@ -41,6 +42,7 @@ require (
 	github.com/onsi/gomega v1.5.0
 	github.com/paked/configure v0.0.0-20190218140148-28f9c3f21a44
 	github.com/rubenv/sql-migrate v0.0.0-20190212093014-1007f53448d7
+	github.com/satori/go.uuid v1.2.0
 	github.com/shirou/gopsutil v2.18.12+incompatible // indirect
 	github.com/shurcooL/go v0.0.0-20190121191506-3fef8c783dec // indirect
 	github.com/sirupsen/logrus v1.4.0
