@@ -38,3 +38,9 @@ docker: clean lint test
 	rm -rf vendor
 	packr clean
 
+integration: docker run-integration
+
+run-integration:
+	go mod vendor
+	docker-compose -f docker-compose.integration.yml up --exit-code-from=wyrdwest-integration --build --force-recreate
+	rm -rf vendor

@@ -1,0 +1,31 @@
+version: '3'
+services:
+    wyrdwest-postgres:
+        image: postgres:10.6-alpine
+        environment:
+            POSTGRES_DB: wyrdwest
+            POSTGRES_USER: wyrdwest
+            POSTGRES_PASSWORD: wyrdwest
+        networks:
+            - wyrdwest-integration
+    wyrdwest-service:
+        image: uk.co.grahamcox.wyrdwest.service/wyrdwest-service:latest
+        environment: 
+            PORT: 8080
+            DB_URL: postgres://wyrdwest:wyrdwest@wyrdwest-postgres/wyrdwest?sslmode=disable
+            DOCKERIZE_PGSQL: tcp://wyrdwest-postgres:5432
+        networks:
+            - wyrdwest-integration
+    wyrdwest-integration:
+        build: 
+            dockerfile: ./Dockerfile-integration
+            context: .
+        environment:
+            DB_URL: postgres://wyrdwest:wyrdwest@wyrdwest-postgres/wyrdwest?sslmode=disable
+            SERVICE_URL: http://wyrdwest-service:8080
+        networks:
+            - wyrdwest-integration
+
+networks:
+    wyrdwest-integration:
+

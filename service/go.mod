@@ -37,7 +37,7 @@ require (
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/nbutton23/zxcvbn-go v0.0.0-20180912185939-ae427f1e4c1d // indirect
-	github.com/onsi/ginkgo v1.8.0 // indirect
+	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
 	github.com/paked/configure v0.0.0-20190218140148-28f9c3f21a44
 	github.com/rubenv/sql-migrate v0.0.0-20190212093014-1007f53448d7

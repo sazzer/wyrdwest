@@ -1,0 +1,11 @@
+# build stage
+FROM golang:stretch
+
+ADD . /go/src/github.com/sazzer/wyrdwest/service
+WORKDIR /go/src/github.com/sazzer/wyrdwest/service
+
+ENV GO111MODULE=on
+ENV GOPATH=/go
+ENV GOFLAGS=-mod=vendor
+
+CMD go test -v github.com/sazzer/wyrdwest/service/integration/...
