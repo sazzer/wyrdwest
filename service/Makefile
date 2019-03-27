@@ -22,14 +22,14 @@ cover-report: test
 	go tool cover -html=output/coverage.out
 
 get-deps: get-packr
-	go get
-	go get github.com/golangci/golangci-lint/cmd/golangci-lint
-	go install github.com/golang/mock/mockgen
+	-go get
+	-go get github.com/golangci/golangci-lint/cmd/golangci-lint
+	-go install github.com/golang/mock/mockgen
 	go generate github.com/sazzer/wyrdwest/service/...
 	mkdir -p output
 
 get-packr:
-	go get github.com/gobuffalo/packr/packr
+	-go get github.com/gobuffalo/packr/packr
 
 docker: clean lint test
 	go mod vendor
