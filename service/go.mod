@@ -49,11 +49,16 @@ require (
 	github.com/spf13/viper v1.3.2 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780 // indirect
+	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
+	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
+	github.com/xeipuuv/gojsonschema v1.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20190320223903-b7391e95e576 // indirect
 	golang.org/x/net v0.0.0-20190322120337-addf6b3196f6 // indirect
 	golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc // indirect
 	golang.org/x/tools v0.0.0-20190322203728-c1a832b0ad89 // indirect
 	gopkg.in/gorp.v1 v1.7.2 // indirect
+	gopkg.in/h2non/baloo.v3 v3.0.2
+	gopkg.in/h2non/gentleman.v2 v2.0.3 // indirect
 	mvdan.cc/unparam v0.0.0-20190310220240-1b9ccfa71afe // indirect
 	sourcegraph.com/sqs/pbtypes v1.0.0 // indirect
 )
