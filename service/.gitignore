@@ -1,3 +1,4 @@
 output
 *_mock_test.go
 *-packr.go
+vendor

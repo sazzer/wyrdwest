@@ -18,7 +18,7 @@ var _ = Describe("Health", func() {
 			Expect(GinkgoT()).
 			Status(200).
 			Type("json").
-			JSON(http.ParseJsonToMap(expected)).
+			JSON(http.ParseJSONToMap(expected)).
 			Done()
 		Expect(err).To(BeNil())
 	})
