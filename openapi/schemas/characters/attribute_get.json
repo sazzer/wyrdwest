@@ -1,0 +1,13 @@
+{
+    "allOf": [
+        {
+            "$ref": "attribute.json"
+        },
+        {
+            "type": "object",
+            "required": [
+                "self"
+            ]
+        }
+    ]
+}

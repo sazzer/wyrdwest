@@ -1,0 +1,10 @@
+get:
+    summary: Healthchecks for the system
+    operationId: health
+    tags:
+        - misc
+    responses:
+        200:
+            description: The system is healthy
+        500:
+            description: The system is unhealthy

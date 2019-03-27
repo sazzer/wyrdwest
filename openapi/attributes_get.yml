@@ -1,0 +1,38 @@
+get:
+    summary: Get a single Attribute by ID
+    operationId: attributes_get
+    tags: 
+        - characters
+        - attributes
+    parameters:
+        -
+            name: id
+            in: path
+            description: The ID of the Attribute to get
+            required: true
+            schema: 
+                type: string
+                format: uuid
+    responses:
+        200:
+            description: The attribute details
+            content:
+                application/json:
+                    schema:
+                        $ref: schemas/characters/attribute_get.json
+                    example: 
+                        {
+                            "self": "/attributes/00000000-0000-0000-0000-000000000000",
+                            "name": "Strength",
+                            "description": "How strong I am"
+                        }
+        404:
+            description: The requested attribute does not exist
+            content:
+                application/problem+json:
+                    example:
+                        {
+                            "type": "tag:wyrdwest,2019:problems/attributes/not-found",
+                            "title": "The requested attribute could not be found"
+                        }
+

@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "self": {
+            "type": "string",
+            "format": "url",
+            "minimum": 1
+        },
+        "name": {
+            "type": "string",
+            "minimum": 1
+        },
+        "description": {
+            "type": "string",
+            "minimum": 1
+        }
+    },
+    "required": [
+        "name",
+        "description"
+    ]
+}
