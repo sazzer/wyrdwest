@@ -7,7 +7,7 @@ import (
 )
 
 // GetAttributeByID returns the Attribute with the given ID, or an error if it couldn't be loaded
-func (dao AttributesDaoImpl) GetAttributeByID(id attributes.AttributeID) (attributes.Attribute, error) {
+func (dao AttributesDao) GetAttributeByID(id attributes.AttributeID) (attributes.Attribute, error) {
 	rows, err := dao.db.Query("SELECT * FROM attributes WHERE attribute_id = :id",
 		map[string]interface{}{"id": uuid.UUID(id).String()})
 
