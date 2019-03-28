@@ -42,8 +42,8 @@ integration: docker run-integration
 
 run-integration:
 	go mod vendor
-	docker-compose -f docker-compose.integration.yml down
-	docker-compose -f docker-compose.integration.yml up --exit-code-from=wyrdwest-integration --build --force-recreate --always-recreate-deps
+	docker-compose -f docker-compose.integration.yml -p wyrdwest_integration down
+	docker-compose -f docker-compose.integration.yml -p wyrdwest_integration up --exit-code-from=wyrdwest-integration --build --force-recreate --always-recreate-deps
 	rm -rf vendor
 
 local-integration: 
