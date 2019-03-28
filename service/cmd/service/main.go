@@ -3,6 +3,7 @@ package main
 import (
 	_ "github.com/lib/pq"
 	"github.com/paked/configure"
+	attributes "github.com/sazzer/wyrdwest/service/internal/characters/attributes/wiring"
 	"github.com/sazzer/wyrdwest/service/internal/health"
 	"github.com/sazzer/wyrdwest/service/internal/server"
 	"github.com/sirupsen/logrus"
@@ -21,6 +22,9 @@ func main() {
 	db := buildDatabase(*dbURL)
 
 	server := server.New()
+
+	_, attributesRegistration := attributes.AttributesWiring(db)
+	server.Register(attributesRegistration)
 
 	healthchecker := health.New()
 	healthchecker.AddHealthcheck("database", db)

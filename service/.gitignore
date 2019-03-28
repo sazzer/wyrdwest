@@ -1,4 +1,5 @@
 output
 *_mock_test.go
+*_mock.go
 *-packr.go
 vendor
