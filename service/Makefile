@@ -45,3 +45,6 @@ run-integration:
 	docker-compose -f docker-compose.integration.yml down
 	docker-compose -f docker-compose.integration.yml up --exit-code-from=wyrdwest-integration --build --force-recreate --always-recreate-deps
 	rm -rf vendor
+
+local-integration: 
+	go test -v github.com/sazzer/wyrdwest/service/integration/...
