@@ -41,6 +41,7 @@ require (
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
 	github.com/paked/configure v0.0.0-20190218140148-28f9c3f21a44
+	github.com/romanyx/polluter v1.2.1
 	github.com/rubenv/sql-migrate v0.0.0-20190212093014-1007f53448d7
 	github.com/satori/go.uuid v1.2.0
 	github.com/shirou/gopsutil v2.18.12+incompatible // indirect
