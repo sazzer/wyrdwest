@@ -23,7 +23,7 @@ var _ = Describe("Attributes", func() {
 			err := http.StartTest().Get("/attributes/invalid").
 				Expect(GinkgoT()).
 				Status(400).
-				Type("json").
+				Type("application\\/problem\\+json").
 				JSON(http.ParseJSONToMap(expected)).
 				Done()
 			Expect(err).To(BeNil())
@@ -39,7 +39,7 @@ var _ = Describe("Attributes", func() {
 			err := http.StartTest().Get("/attributes/00000000-0000-0000-0000-000000000000").
 				Expect(GinkgoT()).
 				Status(404).
-				Type("json").
+				Type("application\\/problem\\+json").
 				JSON(http.ParseJSONToMap(expected)).
 				Done()
 			Expect(err).To(BeNil())

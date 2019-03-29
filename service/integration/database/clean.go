@@ -36,7 +36,8 @@ func listTables(connection *sql.DB) []string {
 	var tableNames []string
 	for rows.Next() {
 		var tableName string
-		rows.Scan(&tableName)
+		err = rows.Scan(&tableName)
+		Expect(err).To(BeNil())
 
 		if tableName != "gorp_migrations" {
 			tableNames = append(tableNames, tableName)

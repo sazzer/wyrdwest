@@ -16,6 +16,7 @@ func getByID(c echo.Context, retriever attributes.Retriever) error {
 	idVal := c.Param("id")
 	parsedID, err := uuid.FromString(idVal)
 	if err != nil {
+		c.Response().Header().Set("Content-Type", "application/problem+json")
 		return c.JSON(http.StatusBadRequest, problems.Problem{
 			Type:   "tag:wyrdwest,2019:problems/attributes/invalid-id",
 			Title:  "The Attribute ID was invalid",
@@ -27,6 +28,7 @@ func getByID(c echo.Context, retriever attributes.Retriever) error {
 	if err != nil {
 		switch err.(type) {
 		case attributes.AttributeNotFoundError:
+			c.Response().Header().Set("Content-Type", "application/problem+json")
 			return c.JSON(http.StatusNotFound, problems.Problem{
 				Type:   "tag:wyrdwest,2019:problems/attributes/unknown-attribute",
 				Title:  "The Attribute was not found",

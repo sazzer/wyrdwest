@@ -13,7 +13,7 @@ run: get-deps lint test
 	go run github.com/sazzer/wyrdwest/service/cmd/service
 
 lint: get-deps
-	golangci-lint run --enable-all --disable lll
+	golangci-lint run --enable-all --disable lll --skip-dirs integration
 
 test: get-deps lint
 	go test -covermode=count -coverprofile=output/coverage.out github.com/sazzer/wyrdwest/service/...

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"os"
 
+	// The postgres drivers
 	_ "github.com/lib/pq"
 
 	"github.com/sirupsen/logrus"
