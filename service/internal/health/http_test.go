@@ -26,7 +26,7 @@ func (suite *HTTPSuite) SetupTest() {
 func (suite HTTPSuite) runTest() *httptest.ResponseRecorder {
 	r := health.NewRouter(&suite.healthchecker)
 
-	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, req)
 	return rec

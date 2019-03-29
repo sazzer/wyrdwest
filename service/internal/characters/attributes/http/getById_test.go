@@ -10,18 +10,15 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes"
 
-	"github.com/labstack/echo/v4"
 	. "github.com/onsi/gomega"
 	attributesHttp "github.com/sazzer/wyrdwest/service/internal/characters/attributes/http"
 )
 
 func (suite HTTPSuite) testGetByID(id string) *httptest.ResponseRecorder {
-	e := echo.New()
-	attributesHttp.RegisterAttributes(suite.mockRetriever)(e)
-
-	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/attributes/%s", id), nil)
+	r := attributesHttp.NewRouter(suite.mockRetriever)
+	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/%s", id), nil)
 	rec := httptest.NewRecorder()
-	e.ServeHTTP(rec, req)
+	r.ServeHTTP(rec, req)
 	return rec
 }
 

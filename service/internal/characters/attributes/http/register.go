@@ -1,14 +1,15 @@
 package http
 
 import (
-	"github.com/labstack/echo/v4"
+	"net/http"
+
+	"github.com/go-chi/chi"
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes"
-	"github.com/sazzer/wyrdwest/service/internal/server"
 )
 
-// RegisterAttributes will return the means to register the Attributes Handler with the HTTP Server
-func RegisterAttributes(dao attributes.Retriever) server.HandlerRegistrationFunc {
-	return func(e *echo.Echo) {
-		e.GET("/attributes/:id", func(c echo.Context) error { return getByID(c, dao) })
-	}
+// NewRouter will return the router used for working with Attributes
+func NewRouter(dao attributes.Retriever) *chi.Mux {
+	r := chi.NewRouter()
+	r.Get("/{id}", func(w http.ResponseWriter, r *http.Request) { getByID(w, r, dao) })
+	return r
 }

@@ -5,17 +5,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 
 	"github.com/sirupsen/logrus"
-
-	"github.com/go-chi/chi"
-
-	"github.com/labstack/echo/v4"
 )
-
-// HandlerRegistrationFunc represents a function that can be used to register handlers with the web server
-type HandlerRegistrationFunc = func(*echo.Echo)
 
 // Server represents the actual web server to run
 type Server struct {
@@ -37,13 +31,9 @@ func New() Server {
 	}
 }
 
-// Register allows us to register handlers with the server
-func (server *Server) Register(handlers HandlerRegistrationFunc) {
-}
-
 // AddRoutes will add a new router onto the server
-func (server *Server) AddRoutes(router http.Handler) {
-	server.router.Mount("/", router)
+func (server *Server) AddRoutes(base string, router http.Handler) {
+	server.router.Mount(base, router)
 }
 
 // Start will start the server listening

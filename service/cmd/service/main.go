@@ -23,12 +23,12 @@ func main() {
 
 	server := server.New()
 
-	_, attributesRegistration := attributes.AttributesWiring(db)
-	server.Register(attributesRegistration)
+	_, attributesRouter := attributes.AttributesWiring(db)
+	server.AddRoutes("/attributes", attributesRouter)
 
 	healthchecker := health.New()
 	healthchecker.AddHealthcheck("database", db)
-	server.AddRoutes(health.NewRouter(&healthchecker))
+	server.AddRoutes("/health", health.NewRouter(&healthchecker))
 
 	if err := server.Start(*port); err != nil {
 		logrus.WithError(err).Error("Failed to start server")

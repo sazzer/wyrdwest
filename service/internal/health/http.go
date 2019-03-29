@@ -60,6 +60,6 @@ func (h *Healthchecker) checkHealth(w http.ResponseWriter, r *http.Request) {
 // NewRouter will return the router used for performing Healthchecks
 func NewRouter(h *Healthchecker) *chi.Mux {
 	r := chi.NewRouter()
-	r.Get("/health", h.checkHealth)
+	r.Get("/", h.checkHealth)
 	return r
 }

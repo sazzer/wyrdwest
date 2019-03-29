@@ -1,17 +1,17 @@
 package wiring
 
 import (
+	"github.com/go-chi/chi"
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes/dao"
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes/http"
 	"github.com/sazzer/wyrdwest/service/internal/database"
-	"github.com/sazzer/wyrdwest/service/internal/server"
 )
 
 // AttributesWiring builds the components that we want to wire in for our application
-func AttributesWiring(db database.DB) (dao.AttributesDao, server.HandlerRegistrationFunc) {
+func AttributesWiring(db database.DB) (dao.AttributesDao, *chi.Mux) {
 	dao := dao.New(db)
 
-	registrationFunc := http.RegisterAttributes(dao)
+	router := http.NewRouter(dao)
 
-	return dao, registrationFunc
+	return dao, router
 }
