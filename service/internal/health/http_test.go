@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	gomock "github.com/golang/mock/gomock"
-	"github.com/labstack/echo/v4"
 	. "github.com/onsi/gomega"
 	"github.com/sazzer/wyrdwest/service/internal/health"
 	"github.com/stretchr/testify/suite"
@@ -25,12 +24,11 @@ func (suite *HTTPSuite) SetupTest() {
 }
 
 func (suite HTTPSuite) runTest() *httptest.ResponseRecorder {
-	e := echo.New()
-	health.RegisterHandler(&suite.healthchecker)(e)
+	r := health.NewRouter(&suite.healthchecker)
 
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 	rec := httptest.NewRecorder()
-	e.ServeHTTP(rec, req)
+	r.ServeHTTP(rec, req)
 	return rec
 }
 
@@ -39,6 +37,7 @@ func (suite *HTTPSuite) TestNoHealthchecks() {
 
 	g := NewGomegaWithT(suite.T())
 	g.Expect(rec.Code).To(Equal(200))
+	g.Expect(rec.Header().Get("Content-Type")).To(Equal("application/json"))
 	g.Expect(rec.Body).To(MatchJSON(`{}`))
 }
 
@@ -51,6 +50,7 @@ func (suite *HTTPSuite) TestOnePassingHealthchecks() {
 
 	g := NewGomegaWithT(suite.T())
 	g.Expect(rec.Code).To(Equal(200))
+	g.Expect(rec.Header().Get("Content-Type")).To(Equal("application/json"))
 	g.Expect(rec.Body).To(MatchJSON(`{"passing": {"status": "ok"}}`))
 }
 
@@ -63,6 +63,7 @@ func (suite *HTTPSuite) TestOneFailingHealthchecks() {
 
 	g := NewGomegaWithT(suite.T())
 	g.Expect(rec.Code).To(Equal(503))
+	g.Expect(rec.Header().Get("Content-Type")).To(Equal("application/json"))
 	g.Expect(rec.Body).To(MatchJSON(`{"failing": {"status": "fail", "message": "Oops"}}`))
 }
 
@@ -80,6 +81,7 @@ func (suite *HTTPSuite) TestMixedHealthchecks() {
 
 	g := NewGomegaWithT(suite.T())
 	g.Expect(rec.Code).To(Equal(503))
+	g.Expect(rec.Header().Get("Content-Type")).To(Equal("application/json"))
 	g.Expect(rec.Body).To(MatchJSON(`{"passing": {"status": "ok"}, "failing": {"status": "fail", "message": "Oops"}}`))
 }
 

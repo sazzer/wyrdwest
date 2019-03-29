@@ -2,9 +2,16 @@ package server
 
 import (
 	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/go-chi/chi/middleware"
+
+	"github.com/sirupsen/logrus"
+
+	"github.com/go-chi/chi"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 // HandlerRegistrationFunc represents a function that can be used to register handlers with the web server
@@ -12,32 +19,36 @@ type HandlerRegistrationFunc = func(*echo.Echo)
 
 // Server represents the actual web server to run
 type Server struct {
-	server *echo.Echo
+	router *chi.Mux
 }
 
 // New creates a new Web Server
 func New() Server {
-	e := echo.New()
+	r := chi.NewRouter()
 
-	e.Use(middleware.RequestID())
-	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(middleware.Logger())
-	e.Use(middleware.CORS())
-	e.Use(middleware.Gzip())
-	e.Use(middleware.Recover())
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.Timeout(60 * time.Second))
 
 	return Server{
-		server: e,
+		router: r,
 	}
 }
 
 // Register allows us to register handlers with the server
 func (server *Server) Register(handlers HandlerRegistrationFunc) {
-	handlers(server.server)
+}
+
+// AddRoutes will add a new router onto the server
+func (server *Server) AddRoutes(router http.Handler) {
+	server.router.Mount("/", router)
 }
 
 // Start will start the server listening
 func (server *Server) Start(port int) error {
+	logrus.WithField("port", port).Info("Starting server...")
 	address := fmt.Sprintf(":%d", port)
-	return server.server.Start(address)
+	return http.ListenAndServe(address, server.router)
 }

@@ -8,6 +8,7 @@ require (
 	github.com/StackExchange/wmi v0.0.0-20181212234831-e0a55b97c705 // indirect
 	github.com/coreos/etcd v3.3.12+incompatible // indirect
 	github.com/fatih/color v1.7.0 // indirect
+	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-critic/go-critic v0.3.4 // indirect
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-toolsmith/astcast v1.0.0 // indirect

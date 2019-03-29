@@ -28,7 +28,7 @@ func main() {
 
 	healthchecker := health.New()
 	healthchecker.AddHealthcheck("database", db)
-	server.Register(health.RegisterHandler(&healthchecker))
+	server.AddRoutes(health.NewRouter(&healthchecker))
 
 	if err := server.Start(*port); err != nil {
 		logrus.WithError(err).Error("Failed to start server")

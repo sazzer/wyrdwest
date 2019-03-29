@@ -1,10 +1,12 @@
 package health
 
 import (
+	"encoding/json"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
-	"github.com/sazzer/wyrdwest/service/internal/server"
+	"github.com/sirupsen/logrus"
+
+	"github.com/go-chi/chi"
 )
 
 // Healthchecker is a means to check the health of the system
@@ -31,7 +33,7 @@ type Health struct {
 }
 
 // CheckHealth will check the health of the system
-func (h *Healthchecker) checkHealth(c echo.Context) error {
+func (h *Healthchecker) checkHealth(w http.ResponseWriter, r *http.Request) {
 	result := make(map[string]Health)
 
 	statusCode := http.StatusOK
@@ -47,12 +49,17 @@ func (h *Healthchecker) checkHealth(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(statusCode, result)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	err := json.NewEncoder(w).Encode(result)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to write response")
+	}
 }
 
-// RegisterHandler will return the means to register the Healthcheck Handler with the HTTP Server
-func RegisterHandler(h *Healthchecker) server.HandlerRegistrationFunc {
-	return func(e *echo.Echo) {
-		e.GET("/health", h.checkHealth)
-	}
+// NewRouter will return the router used for performing Healthchecks
+func NewRouter(h *Healthchecker) *chi.Mux {
+	r := chi.NewRouter()
+	r.Get("/health", h.checkHealth)
+	return r
 }
