@@ -1,0 +1,44 @@
+version: 2.0
+
+jobs:
+  build_service:
+    docker:
+      - image: circleci/golang:1.12
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - "go-dependencies-{{ checksum \"service/go.sum\" }}"
+            - "go-dependencies-"
+
+      - setup_remote_docker
+
+      - run:
+          name: "Get Dependencies"
+          working_directory: ~/repo/service
+          command: make get-deps
+
+      - run:
+          name: "Build and Test"
+          working_directory: ~/repo/service
+          command: make clean generate lint test cover-report docker
+
+      - run:
+          name: "Integration Test"
+          working_directory: ~/repo/service
+          command: make clean run-integration
+
+      - save_cache:
+          key: "go-dependencies-{{ checksum \"service/go.sum\" }}"
+          paths:
+            - "/go/pkg"
+
+workflows:
+  version: 2
+  full_build:
+    jobs:
+      - build_service
