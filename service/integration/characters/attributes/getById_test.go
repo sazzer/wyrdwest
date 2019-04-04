@@ -50,7 +50,7 @@ func (suite *Suite) TestGetKnownID() {
 	suite.StartTest().Get("/attributes/00000000-0000-0000-0000-000000000000").
 		Expect(suite.T()).
 		Status(200).
-		Type("application\\/problem\\+json").
+		Type("application\\/json").
 		JSON(suite.ParseJSONToMap(expected)).
 		Done()
 }

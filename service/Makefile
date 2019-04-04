@@ -16,7 +16,7 @@ lint: generate
 	golangci-lint run --enable-all --disable lll --skip-dirs integration
 
 test: generate lint
-	go test -covermode=count -coverprofile=output/coverage.out github.com/sazzer/wyrdwest/service/...
+	go test -covermode=count -coverprofile=output/coverage.out github.com/sazzer/wyrdwest/service/internal/...
 
 cover-report: test
 	go tool cover -html=output/coverage.out
