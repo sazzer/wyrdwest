@@ -13,7 +13,7 @@ run: generate lint test
 	go run github.com/sazzer/wyrdwest/service/cmd/service
 
 lint: generate
-	#golangci-lint run --enable-all --disable lll --skip-dirs integration
+	golangci-lint run --enable-all --disable lll --skip-dirs integration
 
 test: generate lint
 	go test -covermode=count -coverprofile=output/coverage.out github.com/sazzer/wyrdwest/service/...
@@ -22,7 +22,7 @@ cover-report: test
 	go tool cover -html=output/coverage.out
 
 get-deps:
-	#go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.15.0
+	go get github.com/golangci/golangci-lint/cmd/golangci-lint@master
 	go get
 	go install github.com/golang/mock/mockgen
 	go get github.com/gobuffalo/packr/packr
