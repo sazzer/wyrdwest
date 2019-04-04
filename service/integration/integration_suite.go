@@ -1,6 +1,7 @@
 package integration
 
 import (
+	. "github.com/onsi/gomega"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/sazzer/wyrdwest/service/integration/database"
@@ -17,7 +18,12 @@ type Suite struct {
 func (suite *Suite) SetupTest() {
 	if !http.Enabled() || !database.Enabled() {
 		suite.T().Skip()
+		return
 	}
+
+	RegisterTestingT(suite.T())
+
+	database.CleanDatabase()
 }
 
 // StartTest will start the Baloo Test Client for our tests
@@ -28,4 +34,8 @@ func (suite *Suite) StartTest() *baloo.Client {
 // ParseJSONToMap will convert the given JSON String to a Map for assertions
 func (suite *Suite) ParseJSONToMap(input string) map[string]interface{} {
 	return http.ParseJSONToMap(input)
+}
+
+func (suite *Suite) Seed(input string) {
+	database.Seed(input)
 }
