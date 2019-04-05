@@ -3,6 +3,8 @@ package attributes
 import (
 	"time"
 
+	"github.com/sazzer/wyrdwest/service/internal/service"
+
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -17,4 +19,10 @@ type Attribute struct {
 	Updated     time.Time
 	Name        string
 	Description string
+}
+
+// AttributePage represents a page of Attribute records
+type AttributePage struct {
+	service.PageInfo
+	Data []Attribute
 }
