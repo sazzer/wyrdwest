@@ -30,12 +30,5 @@ func (dao AttributesDao) GetAttributeByID(id attributes.AttributeID) (attributes
 	}
 	logrus.WithField("id", id).WithField("row", resultRow).Debug("Loaded attribute data")
 
-	return attributes.Attribute{
-		ID:          attributes.AttributeID(uuid.FromStringOrNil(resultRow.ID)),
-		Version:     uuid.FromStringOrNil(resultRow.Version),
-		Created:     resultRow.Created,
-		Updated:     resultRow.Updated,
-		Name:        resultRow.Name,
-		Description: resultRow.Description,
-	}, nil
+	return resultRow.ToAPI(), nil
 }

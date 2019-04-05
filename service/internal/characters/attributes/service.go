@@ -17,5 +17,5 @@ type Retriever interface {
 	GetAttributeByID(id AttributeID) (Attribute, error)
 
 	// ListAttributes allows us to get a list of attributes that match certain criteria
-	ListAttributes(criteria AttributeMatchCriteria, sorts []service.SortField, offset int, count int) (AttributePage, error)
+	ListAttributes(criteria AttributeMatchCriteria, sorts []service.SortField, offset uint64, count uint64) (AttributePage, error)
 }

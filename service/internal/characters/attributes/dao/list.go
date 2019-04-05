@@ -12,15 +12,15 @@ import (
 	"github.com/sazzer/wyrdwest/service/internal/service"
 )
 
-var (
-	sortFields = map[string]string{
-		"name":    "ASC",
-		"created": "DESC",
-	}
-)
-
 // ListAttributes allows us to get a list of attributes that match certain criteria
 func (dao AttributesDao) ListAttributes(criteria attributes.AttributeMatchCriteria, sorts []service.SortField, offset uint64, count uint64) (attributes.AttributePage, error) {
+	var (
+		sortFields = map[string]string{
+			"name":    "ASC",
+			"created": "DESC",
+		}
+	)
+
 	// Base query to execute
 	sqlBuilder := squirrel.Select("*").From("attributes").Offset(offset).Limit(count)
 
@@ -41,8 +41,8 @@ func (dao AttributesDao) ListAttributes(criteria attributes.AttributeMatchCriter
 			}
 			sqlBuilder = sqlBuilder.OrderBy(fmt.Sprintf("%s %s", sort.Field, sortDir))
 		} else {
-			logrus.WithField("sort", sort.Field).Error("Unknown sort field")
-			return attributes.AttributePage{}, errors.New("Unknown sort field")
+			logrus.WithField("sort", sort.Field).Error("unknown sort field")
+			return attributes.AttributePage{}, errors.New("unknown sort field")
 		}
 	}
 
@@ -63,10 +63,25 @@ func (dao AttributesDao) ListAttributes(criteria attributes.AttributeMatchCriter
 	}
 	defer rows.Close()
 
+	results := []attributes.Attribute{}
+	for rows.Next() {
+		resultRow := dbAttribute{}
+		err = rows.StructScan(&resultRow)
+		if err != nil {
+			logrus.WithError(err).Error("Failed to parse attribute")
+			return attributes.AttributePage{}, err
+		}
+		logrus.WithField("row", resultRow).Debug("Loaded attribute data")
+
+		results = append(results, resultRow.ToAPI())
+	}
+
+	totalSize := len(results)
+
 	return attributes.AttributePage{
 		PageInfo: service.PageInfo{
-			TotalSize: 0,
+			TotalSize: totalSize,
 		},
-		Data: []attributes.Attribute{},
+		Data: results,
 	}, nil
 }

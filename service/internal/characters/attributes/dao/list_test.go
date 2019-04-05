@@ -2,8 +2,10 @@ package dao_test
 
 import (
 	"database/sql/driver"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes"
 	"github.com/sazzer/wyrdwest/service/internal/service"
@@ -84,4 +86,45 @@ func (suite *DAOSuite) TestGetNoRows() {
 			suite.Assert().Equal(0, len(attributes.Data))
 		})
 	}
+}
+
+func (suite *DAOSuite) TestGetOnlyPage() {
+	var (
+		strengthID          = uuid.NewV4()
+		strengthVersion     = uuid.NewV4()
+		intelligenceID      = uuid.NewV4()
+		intelligenceVersion = uuid.NewV4()
+		now                 = time.Now()
+	)
+
+	rows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
+	rows.AddRow(strengthID.String(), strengthVersion.String(), now, now, "Strength", "How strong I am")
+	rows.AddRow(intelligenceID.String(), intelligenceVersion.String(), now, now, "Intelligence", "How intelligent I am")
+	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes ORDER BY name ASC, attribute_id DESC LIMIT 10 OFFSET 0").
+		RowsWillBeClosed().
+		WillReturnRows(rows)
+
+	results, err := suite.testSubject.ListAttributes(attributes.AttributeMatchCriteria{}, []service.SortField{}, 0, 10)
+	suite.Assert().NoError(err)
+
+	suite.Assert().Equal(2, results.TotalSize)
+	suite.Require().Equal(2, len(results.Data))
+
+	suite.Assert().Equal(attributes.Attribute{
+		ID:          attributes.AttributeID(strengthID),
+		Version:     strengthVersion,
+		Created:     now,
+		Updated:     now,
+		Name:        "Strength",
+		Description: "How strong I am",
+	}, results.Data[0])
+
+	suite.Assert().Equal(attributes.Attribute{
+		ID:          attributes.AttributeID(intelligenceID),
+		Version:     intelligenceVersion,
+		Created:     now,
+		Updated:     now,
+		Name:        "Intelligence",
+		Description: "How intelligent I am",
+	}, results.Data[1])
 }
