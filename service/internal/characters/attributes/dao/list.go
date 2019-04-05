@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -14,7 +13,7 @@ import (
 	"github.com/sazzer/wyrdwest/service/internal/service"
 )
 
-func (dao AttributesDao) getListRows(criteria attributes.AttributeMatchCriteria, sorts []service.SortField, offset uint64, count uint64) (*sqlx.Rows, error) {
+func getListRowsQuery(criteria attributes.AttributeMatchCriteria, sorts []service.SortField, offset uint64, count uint64) squirrel.SelectBuilder {
 	var (
 		sortFields = map[string]string{
 			"name":    "ASC",
@@ -43,7 +42,6 @@ func (dao AttributesDao) getListRows(criteria attributes.AttributeMatchCriteria,
 			sqlBuilder = sqlBuilder.OrderBy(fmt.Sprintf("%s %s", sort.Field, sortDir))
 		} else {
 			logrus.WithField("sort", sort.Field).Error("unknown sort field")
-			return nil, errors.New("unknown sort field")
 		}
 	}
 
@@ -51,16 +49,10 @@ func (dao AttributesDao) getListRows(criteria attributes.AttributeMatchCriteria,
 	sqlBuilder = sqlBuilder.OrderBy("name ASC")
 	sqlBuilder = sqlBuilder.OrderBy("attribute_id DESC")
 
-	sql, args, err := sqlBuilder.ToSql()
-	if err != nil {
-		logrus.WithError(err).Error("Failed to build attributes list SQL")
-		return nil, err
-	}
-
-	return dao.db.QueryPositional(sql, args)
+	return sqlBuilder
 }
 
-func (dao AttributesDao) getCount(criteria attributes.AttributeMatchCriteria) (uint64, error) {
+func getCountQuery(criteria attributes.AttributeMatchCriteria) squirrel.SelectBuilder {
 	// Base query to execute
 	sqlBuilder := squirrel.Select("COUNT(*) AS c").From("attributes")
 
@@ -69,54 +61,28 @@ func (dao AttributesDao) getCount(criteria attributes.AttributeMatchCriteria) (u
 		sqlBuilder = sqlBuilder.Where(squirrel.Eq{"UPPER(name)": strings.ToUpper(criteria.Name)})
 	}
 
-	sql, args, err := sqlBuilder.ToSql()
-	if err != nil {
-		logrus.WithError(err).Error("Failed to build attributes count SQL")
-		return 0, err
-	}
-
-	rows, err := dao.db.QueryPositional(sql, args)
-	if err != nil {
-		logrus.WithError(err).Error("Failed to count attributes")
-		return 0, err
-	}
-	defer rows.Close()
-
-	if !rows.Next() {
-		logrus.Debug("No count returned")
-		return 0, err
-	}
-
-	var count uint64
-	err = rows.Scan(&count)
-	if err != nil {
-		logrus.WithError(err).Error("Failed to retrieve attribute count")
-		return 0, err
-	}
-
-	return count, nil
+	return sqlBuilder
 }
 
 // ListAttributes allows us to get a list of attributes that match certain criteria
 func (dao AttributesDao) ListAttributes(criteria attributes.AttributeMatchCriteria, sorts []service.SortField, offset uint64, count uint64) (attributes.AttributePage, error) {
-	rows, err := dao.getListRows(criteria, sorts, offset, count)
-	if err != nil {
-		logrus.WithError(err).Error("Failed to load attributes")
-		return attributes.AttributePage{}, err
-	}
-	defer rows.Close()
 
 	results := []attributes.Attribute{}
-	for rows.Next() {
+	if err := dao.db.QueryWithCallback(getListRowsQuery(criteria, sorts, offset, count), func(row *sqlx.Rows) error {
 		resultRow := dbAttribute{}
-		err = rows.StructScan(&resultRow)
+		err := row.StructScan(&resultRow)
 		if err != nil {
 			logrus.WithError(err).Error("Failed to parse attribute")
-			return attributes.AttributePage{}, err
+			return err
 		}
 		logrus.WithField("row", resultRow).Debug("Loaded attribute data")
 
 		results = append(results, resultRow.ToAPI())
+
+		return nil
+	}); err != nil {
+		logrus.WithError(err).Error("Failed to read attributes")
+		return attributes.AttributePage{}, err
 	}
 
 	numResults := uint64(len(results))
@@ -124,12 +90,12 @@ func (dao AttributesDao) ListAttributes(criteria attributes.AttributeMatchCriter
 	if numResults == 0 || numResults == count {
 		// Either we got no rows back, or we got exactly as many as we asked for. That means we dont know the total size
 		// So we need to go and find out
-		totalSize, err = dao.getCount(criteria)
-		if err != nil {
-			logrus.WithError(err).Error("Failed to count attribute")
+		if err := dao.db.QueryWithCallback(getCountQuery(criteria), func(row *sqlx.Rows) error {
+			return row.Scan(&totalSize)
+		}); err != nil {
+			logrus.WithError(err).Error("Failed to count attributes")
 			return attributes.AttributePage{}, err
 		}
-
 	}
 
 	return attributes.AttributePage{
