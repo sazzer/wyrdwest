@@ -79,10 +79,16 @@ func (suite *DAOSuite) TestGetNoRows() {
 				RowsWillBeClosed().
 				WillReturnRows(rows)
 
+			countRows := sqlmock.NewRows([]string{"c"})
+			countRows.AddRow(0)
+			suite.mockCtrl.ExpectQuery("SELECT COUNT\\(\\*\\) AS c").
+				RowsWillBeClosed().
+				WillReturnRows(countRows)
+
 			attributes, err := suite.testSubject.ListAttributes(tt.criteria, tt.sorts, tt.offset, tt.pageSize)
 			suite.Assert().NoError(err)
 
-			suite.Assert().Equal(0, attributes.TotalSize)
+			suite.Assert().Equal(uint64(0), attributes.TotalSize)
 			suite.Assert().Equal(0, len(attributes.Data))
 		})
 	}
@@ -107,7 +113,7 @@ func (suite *DAOSuite) TestGetOnlyPage() {
 	results, err := suite.testSubject.ListAttributes(attributes.AttributeMatchCriteria{}, []service.SortField{}, 0, 10)
 	suite.Assert().NoError(err)
 
-	suite.Assert().Equal(2, results.TotalSize)
+	suite.Assert().Equal(uint64(2), results.TotalSize)
 	suite.Require().Equal(2, len(results.Data))
 
 	suite.Assert().Equal(attributes.Attribute{
@@ -127,4 +133,80 @@ func (suite *DAOSuite) TestGetOnlyPage() {
 		Name:        "Intelligence",
 		Description: "How intelligent I am",
 	}, results.Data[1])
+}
+
+func (suite *DAOSuite) TestGetFirstPage() {
+	dataRows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
+	dataRows.AddRow(uuid.NewV4().String(), uuid.NewV4().String(), time.Now(), time.Now(), "Strength", "How strong I am")
+	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes ORDER BY name ASC, attribute_id DESC LIMIT 1 OFFSET 0").
+		RowsWillBeClosed().
+		WillReturnRows(dataRows)
+
+	countRows := sqlmock.NewRows([]string{"c"})
+	countRows.AddRow(5)
+	suite.mockCtrl.ExpectQuery("SELECT COUNT\\(\\*\\) AS c FROM attributes").
+		RowsWillBeClosed().
+		WillReturnRows(countRows)
+
+	results, err := suite.testSubject.ListAttributes(attributes.AttributeMatchCriteria{}, []service.SortField{}, 0, 1)
+	suite.Assert().NoError(err)
+
+	suite.Assert().Equal(uint64(5), results.TotalSize)
+	suite.Require().Equal(1, len(results.Data))
+}
+
+func (suite *DAOSuite) TestGetMidPage() {
+	dataRows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
+	dataRows.AddRow(uuid.NewV4().String(), uuid.NewV4().String(), time.Now(), time.Now(), "Strength", "How strong I am")
+	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes ORDER BY name ASC, attribute_id DESC LIMIT 1 OFFSET 20").
+		RowsWillBeClosed().
+		WillReturnRows(dataRows)
+
+	countRows := sqlmock.NewRows([]string{"c"})
+	countRows.AddRow(25)
+	suite.mockCtrl.ExpectQuery("SELECT COUNT\\(\\*\\) AS c FROM attributes").
+		RowsWillBeClosed().
+		WillReturnRows(countRows)
+
+	results, err := suite.testSubject.ListAttributes(attributes.AttributeMatchCriteria{}, []service.SortField{}, 20, 1)
+	suite.Assert().NoError(err)
+
+	suite.Assert().Equal(uint64(25), results.TotalSize)
+	suite.Require().Equal(1, len(results.Data))
+}
+
+func (suite *DAOSuite) TestGetLastPage() {
+	dataRows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
+	dataRows.AddRow(uuid.NewV4().String(), uuid.NewV4().String(), time.Now(), time.Now(), "Strength", "How strong I am")
+	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes ORDER BY name ASC, attribute_id DESC LIMIT 10 OFFSET 20").
+		RowsWillBeClosed().
+		WillReturnRows(dataRows)
+
+	results, err := suite.testSubject.ListAttributes(attributes.AttributeMatchCriteria{}, []service.SortField{}, 20, 10)
+	suite.Assert().NoError(err)
+
+	suite.Assert().Equal(uint64(21), results.TotalSize)
+	suite.Require().Equal(1, len(results.Data))
+}
+
+func (suite *DAOSuite) TestGetFirstPageFiltered() {
+	dataRows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
+	dataRows.AddRow(uuid.NewV4().String(), uuid.NewV4().String(), time.Now(), time.Now(), "Strength", "How strong I am")
+	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes WHERE UPPER\\(name\\) = \\? ORDER BY name ASC, attribute_id DESC LIMIT 1 OFFSET 0").
+		WithArgs("STRENGTH").
+		RowsWillBeClosed().
+		WillReturnRows(dataRows)
+
+	countRows := sqlmock.NewRows([]string{"c"})
+	countRows.AddRow(5)
+	suite.mockCtrl.ExpectQuery("SELECT COUNT\\(\\*\\) AS c FROM attributes WHERE UPPER\\(name\\) = \\?").
+		WithArgs("STRENGTH").
+		RowsWillBeClosed().
+		WillReturnRows(countRows)
+
+	results, err := suite.testSubject.ListAttributes(attributes.AttributeMatchCriteria{Name: "Strength"}, []service.SortField{}, 0, 1)
+	suite.Assert().NoError(err)
+
+	suite.Assert().Equal(uint64(5), results.TotalSize)
+	suite.Require().Equal(1, len(results.Data))
 }

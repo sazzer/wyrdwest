@@ -13,7 +13,7 @@ run: generate lint test
 	go run github.com/sazzer/wyrdwest/service/cmd/service
 
 lint: generate
-	golangci-lint run --enable-all --disable lll --skip-dirs integration
+	golangci-lint run --enable-all --disable lll,dupl --skip-dirs integration
 
 test: generate lint
 	go test -covermode=count -coverprofile=output/coverage.out github.com/sazzer/wyrdwest/service/internal/...
