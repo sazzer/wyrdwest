@@ -11,7 +11,11 @@ import (
 
 // GetAttributeByID returns the Attribute with the given ID, or an error if it couldn't be loaded
 func (dao AttributesDao) GetAttributeByID(id attributes.AttributeID) (attributes.Attribute, error) {
-	sqlBuilder := squirrel.Select("*").From("attributes").Where(squirrel.Eq{"attribute_id": uuid.UUID(id).String()})
+	sqlBuilder := squirrel.
+		Select("*").
+		From("attributes").
+		Where(squirrel.Eq{"attribute_id": uuid.UUID(id).String()}).
+		PlaceholderFormat(squirrel.Dollar)
 
 	resultRow := dbAttribute{}
 

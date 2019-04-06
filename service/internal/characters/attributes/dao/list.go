@@ -49,7 +49,7 @@ func getListRowsQuery(criteria attributes.AttributeMatchCriteria, sorts []servic
 	sqlBuilder = sqlBuilder.OrderBy("name ASC")
 	sqlBuilder = sqlBuilder.OrderBy("attribute_id DESC")
 
-	return sqlBuilder
+	return sqlBuilder.PlaceholderFormat(squirrel.Dollar)
 }
 
 func getCountQuery(criteria attributes.AttributeMatchCriteria) squirrel.SelectBuilder {
@@ -61,7 +61,7 @@ func getCountQuery(criteria attributes.AttributeMatchCriteria) squirrel.SelectBu
 		sqlBuilder = sqlBuilder.Where(squirrel.Eq{"UPPER(name)": strings.ToUpper(criteria.Name)})
 	}
 
-	return sqlBuilder
+	return sqlBuilder.PlaceholderFormat(squirrel.Dollar)
 }
 
 // ListAttributes allows us to get a list of attributes that match certain criteria

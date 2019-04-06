@@ -65,7 +65,7 @@ func (suite *DAOSuite) TestGetNoRows() {
 			criteria: attributes.AttributeMatchCriteria{
 				Name: "strength",
 			},
-			sql:   "SELECT \\* FROM attributes WHERE UPPER\\(name\\) = \\? ORDER BY name ASC, attribute_id DESC LIMIT 0 OFFSET 0",
+			sql:   "SELECT \\* FROM attributes WHERE UPPER\\(name\\) = \\$1 ORDER BY name ASC, attribute_id DESC LIMIT 0 OFFSET 0",
 			binds: []driver.Value{"STRENGTH"},
 		},
 	}
@@ -192,14 +192,14 @@ func (suite *DAOSuite) TestGetLastPage() {
 func (suite *DAOSuite) TestGetFirstPageFiltered() {
 	dataRows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
 	dataRows.AddRow(uuid.NewV4().String(), uuid.NewV4().String(), time.Now(), time.Now(), "Strength", "How strong I am")
-	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes WHERE UPPER\\(name\\) = \\? ORDER BY name ASC, attribute_id DESC LIMIT 1 OFFSET 0").
+	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes WHERE UPPER\\(name\\) = \\$1 ORDER BY name ASC, attribute_id DESC LIMIT 1 OFFSET 0").
 		WithArgs("STRENGTH").
 		RowsWillBeClosed().
 		WillReturnRows(dataRows)
 
 	countRows := sqlmock.NewRows([]string{"c"})
 	countRows.AddRow(5)
-	suite.mockCtrl.ExpectQuery("SELECT COUNT\\(\\*\\) AS c FROM attributes WHERE UPPER\\(name\\) = \\?").
+	suite.mockCtrl.ExpectQuery("SELECT COUNT\\(\\*\\) AS c FROM attributes WHERE UPPER\\(name\\) = \\$1").
 		WithArgs("STRENGTH").
 		RowsWillBeClosed().
 		WillReturnRows(countRows)
