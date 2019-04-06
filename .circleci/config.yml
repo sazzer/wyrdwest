@@ -1,6 +1,46 @@
 version: 2.0
 
 jobs:
+  build_openapi:
+    docker:
+      - image: circleci/node:latest
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - "openapi-dependencies-{{ checksum \"openapi/package.json\" }}"
+            - "openapi-dependencies-"
+
+      - run:
+          name: "Get Dependencies"
+          working_directory: ~/repo/openapi
+          command: npm install
+
+      - run:
+          name: "Lint"
+          working_directory: ~/repo/openapi
+          command: npm test
+
+      - run:
+          name: "Build Output"
+          working_directory: ~/repo/openapi
+          command: |
+            npm run build
+            npm run resolve
+
+      - save_cache:
+          key: "openapi-dependencies-{{ checksum \"openapi/package.json\" }}"
+          paths:
+            - "~/repo/openapi/node_modules"
+
+      - store_artifacts:
+          path: ~/repo/openapi/build
+          destination: openapi
+
   build_service:
     docker:
       - image: circleci/golang:1.12
@@ -41,4 +81,5 @@ workflows:
   version: 2
   full_build:
     jobs:
+      - build_openapi
       - build_service
