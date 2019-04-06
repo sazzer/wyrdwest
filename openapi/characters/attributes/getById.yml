@@ -1,16 +1,15 @@
 get:
     summary: Get a single Attribute by ID
-    operationId: attributes_get
-    tags: 
+    operationId: characters_attributes_get
+    tags:
         - characters
-        - attributes
     parameters:
         -
             name: id
             in: path
             description: The ID of the Attribute to get
             required: true
-            schema: 
+            schema:
                 type: string
                 format: uuid
     responses:
@@ -19,8 +18,8 @@ get:
             content:
                 application/json:
                     schema:
-                        $ref: schemas/characters/attribute_get.json
-                    example: 
+                        $ref: schemas/attribute_get.json
+                    example:
                         {
                             "self": "/attributes/00000000-0000-0000-0000-000000000000",
                             "name": "Strength",

@@ -1,8 +1,8 @@
 get:
     summary: Healthchecks for the system
-    operationId: health
+    operationId: health_get
     tags:
-        - misc
+        - health
     responses:
         200:
             description: The system is healthy

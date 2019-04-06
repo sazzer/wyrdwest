@@ -1,13 +1,18 @@
 openapi: 3.0.2
-info: 
+info:
     title: Wyrd West
     description: API for the Wyrd West online game
     contact:
         name: Graham Cox
         email: graham@grahamcox.co.uk
     version: 0.0.1-ALPHA
+tags:
+    - name: health
+      description: Healthchecks
+    - name: characters
+      description: Character Generation Details
 paths:
-    /health: 
-        $ref: health.yml
+    /health:
+        $ref: health/health.yml
     /attributes/{id}:
-        $ref: attributes_get.yml
+        $ref: characters/attributes/getById.yml
