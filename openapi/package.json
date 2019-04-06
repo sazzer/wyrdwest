@@ -6,7 +6,7 @@
     "test": "speccy lint -v openapi.yml",
     "start": "speccy serve openapi.yml",
     "watch": "nodemon --watch . -e yml,json ./node_modules/.bin/speccy serve openapi.yml",
-    "build": "redoc-cli bundle openapi.yml --title 'WMS Circulation' -o build/openapi.html",
+    "build": "redoc-cli bundle openapi.yml --title 'Wyrd West' -o build/openapi.html",
     "resolve": "mkdir -p build && ./node_modules/.bin/speccy resolve openapi.yml > build/openapi-full.yml"
   },
   "devDependencies": {
