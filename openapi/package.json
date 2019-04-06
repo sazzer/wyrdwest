@@ -1,0 +1,17 @@
+{
+  "name": "wyrdwest",
+  "version": "0.0.1-ALPHA",
+  "description": "Wyrd West API",
+  "scripts": {
+    "test": "speccy lint -v openapi.yml",
+    "start": "speccy serve openapi.yml",
+    "watch": "nodemon --watch . -e yml,json ./node_modules/.bin/speccy serve openapi.yml",
+    "build": "redoc-cli bundle openapi.yml --title 'WMS Circulation' -o build/openapi.html",
+    "resolve": "mkdir -p build && ./node_modules/.bin/speccy resolve openapi.yml > build/openapi-full.yml"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10",
+    "redoc-cli": "^0.8.3",
+    "speccy": "^0.9.0"
+  }
+}
