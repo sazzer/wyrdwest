@@ -129,3 +129,110 @@ func (suite *QuerySuite) TestQueryCallbackDatabaseErrors() {
 	suite.Assert().Error(err)
 	suite.Assert().Empty(counts)
 }
+
+func (suite *QuerySuite) TestQueryOneCallbackNoRows() {
+	sqlBuilder := squirrel.Select("*").From("table")
+	counts := []int{}
+
+	rows := sqlmock.NewRows([]string{"a"})
+	suite.mockCtrl.ExpectQuery(regexp.QuoteMeta("SELECT * FROM table")).
+		RowsWillBeClosed().
+		WillReturnRows(rows)
+
+	err := suite.db.QueryOneWithCallback(sqlBuilder, func(row *sqlx.Rows) error {
+		var c int
+		err := row.Scan(&c)
+		suite.Assert().NoError(err)
+		counts = append(counts, c)
+		return nil
+	})
+
+	suite.Assert().Equal(database.RecordNotFoundError{}, err)
+	suite.Assert().Empty(counts)
+}
+
+func (suite *QuerySuite) TestQueryOneCallbackOneRow() {
+	sqlBuilder := squirrel.Select("*").From("table")
+	counts := []int{}
+
+	rows := sqlmock.NewRows([]string{"a"})
+	rows.AddRow(1)
+	suite.mockCtrl.ExpectQuery(regexp.QuoteMeta("SELECT * FROM table")).
+		RowsWillBeClosed().
+		WillReturnRows(rows)
+
+	err := suite.db.QueryOneWithCallback(sqlBuilder, func(row *sqlx.Rows) error {
+		var c int
+		err := row.Scan(&c)
+		suite.Assert().NoError(err)
+		counts = append(counts, c)
+		return nil
+	})
+
+	suite.Assert().NoError(err)
+	suite.Assert().Equal([]int{1}, counts)
+}
+
+func (suite *QuerySuite) TestQueryOneCallbackTwoRow() {
+	sqlBuilder := squirrel.Select("*").From("table")
+	counts := []int{}
+
+	rows := sqlmock.NewRows([]string{"a"})
+	rows.AddRow(1)
+	rows.AddRow(2)
+	suite.mockCtrl.ExpectQuery(regexp.QuoteMeta("SELECT * FROM table")).
+		RowsWillBeClosed().
+		WillReturnRows(rows)
+
+	err := suite.db.QueryOneWithCallback(sqlBuilder, func(row *sqlx.Rows) error {
+		var c int
+		err := row.Scan(&c)
+		suite.Assert().NoError(err)
+		counts = append(counts, c)
+		return nil
+	})
+
+	suite.Assert().Equal(database.MultipleRecordFoundError{}, err)
+	suite.Assert().Equal([]int{1}, counts)
+}
+
+func (suite *QuerySuite) TestQueryOneCallbackErrors() {
+	sqlBuilder := squirrel.Select("*").From("table")
+	counts := []int{}
+
+	rows := sqlmock.NewRows([]string{"a"})
+	rows.AddRow(1)
+	suite.mockCtrl.ExpectQuery(regexp.QuoteMeta("SELECT * FROM table")).
+		RowsWillBeClosed().
+		WillReturnRows(rows)
+
+	err := suite.db.QueryOneWithCallback(sqlBuilder, func(row *sqlx.Rows) error {
+		var c int
+		err := row.Scan(&c)
+		suite.Assert().NoError(err)
+		counts = append(counts, c)
+		return errors.New("c = 1")
+	})
+
+	suite.Assert().Error(err)
+	suite.Assert().Equal([]int{1}, counts)
+}
+
+func (suite *QuerySuite) TestQueryOneCallbackDatabaseErrors() {
+	sqlBuilder := squirrel.Select("*").From("table")
+	counts := []int{}
+
+	suite.mockCtrl.ExpectQuery(regexp.QuoteMeta("SELECT * FROM table")).
+		WillReturnError(errors.New("sql"))
+
+	err := suite.db.QueryOneWithCallback(sqlBuilder, func(row *sqlx.Rows) error {
+		var c int
+		err := row.Scan(&c)
+		suite.Assert().NoError(err)
+		counts = append(counts, c)
+		return nil
+	})
+
+	suite.Assert().Error(err)
+	suite.Assert().Empty(counts)
+}

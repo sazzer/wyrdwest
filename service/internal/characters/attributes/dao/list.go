@@ -90,7 +90,7 @@ func (dao AttributesDao) ListAttributes(criteria attributes.AttributeMatchCriter
 	if numResults == 0 || numResults == count {
 		// Either we got no rows back, or we got exactly as many as we asked for. That means we dont know the total size
 		// So we need to go and find out
-		if err := dao.db.QueryWithCallback(getCountQuery(criteria), func(row *sqlx.Rows) error {
+		if err := dao.db.QueryOneWithCallback(getCountQuery(criteria), func(row *sqlx.Rows) error {
 			return row.Scan(&totalSize)
 		}); err != nil {
 			logrus.WithError(err).Error("Failed to count attributes")
