@@ -2,14 +2,14 @@ package attributes_test
 
 func (suite *Suite) TestGetInvalidID() {
 	expected := `{
-		"status": 400,
-		"type": "tag:wyrdwest,2019:problems/attributes/invalid-id",
-		"title": "The Attribute ID was invalid"
+		"status": 404,
+		"type": "tag:wyrdwest,2019:problems/attributes/unknown-attribute",
+		"title": "The Attribute was not found"
 	}`
 
 	suite.StartTest().Get("/attributes/invalid").
 		Expect(suite.T()).
-		Status(400).
+		Status(404).
 		Type("application\\/problem\\+json").
 		JSON(suite.ParseJSONToMap(expected)).
 		Done()

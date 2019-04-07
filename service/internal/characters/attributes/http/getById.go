@@ -19,9 +19,9 @@ func getByID(w http.ResponseWriter, r *http.Request, retriever attributes.Retrie
 	parsedID, err := uuid.FromString(idVal)
 	if err != nil {
 		problems.Write(w, problems.Problem{
-			Type:   "tag:wyrdwest,2019:problems/attributes/invalid-id",
-			Title:  "The Attribute ID was invalid",
-			Status: http.StatusBadRequest,
+			Type:   "tag:wyrdwest,2019:problems/attributes/unknown-attribute",
+			Title:  "The Attribute was not found",
+			Status: http.StatusNotFound,
 		})
 		return
 	}

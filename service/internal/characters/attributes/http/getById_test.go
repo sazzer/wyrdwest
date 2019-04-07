@@ -43,11 +43,11 @@ func (suite *HTTPSuite) TestGetAttributeInvalidID() {
 	rec := suite.testGetByID("invalid")
 
 	g := NewGomegaWithT(suite.T())
-	g.Expect(rec.Code).To(Equal(400))
+	g.Expect(rec.Code).To(Equal(404))
 	g.Expect(rec.Body).To(MatchJSON(`{
-		"type": "tag:wyrdwest,2019:problems/attributes/invalid-id",
-		"title": "The Attribute ID was invalid",
-		"status": 400
+		"type": "tag:wyrdwest,2019:problems/attributes/unknown-attribute",
+		"title": "The Attribute was not found",
+		"status": 404
 	}`))
 }
 
