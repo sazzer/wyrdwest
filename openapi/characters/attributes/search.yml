@@ -37,10 +37,18 @@ get:
             description: The sorting to apply to the returned attributes
             required: false
             style: form
-            type: array
             explode: true
             schema:
-                type: string
+                type: array
+                items: 
+                    type: string
+                    enum:
+                        - +name
+                        - -name
+                        - name
+                        - +created
+                        - -created
+                        - created
     responses:
         200:
             description: The attribute details
