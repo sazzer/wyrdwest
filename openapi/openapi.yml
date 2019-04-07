@@ -14,5 +14,7 @@ tags:
 paths:
     /health:
         $ref: health/health.yml
+    /attributes:
+        $ref: characters/attributes/search.yml
     /attributes/{id}:
         $ref: characters/attributes/getById.yml

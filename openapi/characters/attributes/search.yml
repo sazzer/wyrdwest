@@ -1,0 +1,114 @@
+get:
+    summary: Search Attributes
+    operationId: characters_attributes_search
+    tags:
+        - characters
+    parameters:
+        -
+            name: name
+            in: query
+            description: The name of the Attribute
+            required: false
+            schema:
+                type: string
+        -
+            name: offset
+            in: query
+            description: The offset of the first attribute to return
+            required: false
+            schema:
+                type: number
+                format: integer
+                minimum: 0
+                default: 0
+        -
+            name: count
+            in: query
+            description: The number of attributes to return
+            required: false
+            schema:
+                type: number
+                format: integer
+                minimum: 0
+                default: 10
+        -
+            name: sort
+            in: query
+            description: The sorting to apply to the returned attributes
+            required: false
+            style: form
+            type: array
+            explode: true
+            schema:
+                type: string
+    responses:
+        200:
+            description: The attribute details
+            content:
+                application/json:
+                    schema:
+                        $ref: schemas/attribute_search.json
+                    examples:
+                        No Matches:
+                            value:
+                                {
+                                    "self": "/attributes?count=10&offset=0",
+                                    "total": 0,
+                                    "offset": 0,
+                                    "data": []
+                                }
+                        No More Matches:
+                            value:
+                                {
+                                    "self": "/attributes?count=10&offset=20",
+                                    "first": "/attributes?count=10&offset=0",
+                                    "prev": "/attributes?count=10&offset=0",
+                                    "total": 10,
+                                    "offset": 20,
+                                    "data": []
+                                }
+                        First Page:
+                            value:
+                                {
+                                    "self": "/attributes?count=2&offset=0",
+                                    "next": "/attributes?count=2&offset=2",
+                                    "total": 10,
+                                    "offset": 0,
+                                    "data": [
+                                        {
+                                            "self": "/attributes/00000000-0000-0000-0000-000000000000",
+                                            "name": "Strength",
+                                            "description": "How strong I am"
+                                        }, {
+                                            "self": "/attributes/00000000-0000-0000-0000-000000000001",
+                                            "name": "Intelligence",
+                                            "description": "How intelligent I am"
+                                        }
+                                    ]
+                                }
+        400:
+            description: The request was somehow invalid
+            content:
+                application/json:
+                    examples:
+                        Invalid Offset:
+                            value:
+                                {
+                                    "type": "tag:wyrdwest,2019:problems/negative-offset",
+                                    "title": "The requested offset can not be negative"
+                                }
+                        Invalid Count:
+                            value:
+                                {
+                                    "type": "tag:wyrdwest,2019:problems/negative-count",
+                                    "title": "The requested count can not be negative"
+                                }
+                        Invalid Sort:
+                            value:
+                                {
+                                    "type": "tag:wyrdwest,2019:problems/attributes/unknown-sort-field",
+                                    "title": "The requested sort field is not known",
+                                    "unknownSortFields": [
+                                        "naem"
+                                    ]
+                                }

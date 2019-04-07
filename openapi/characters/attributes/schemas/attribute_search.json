@@ -1,0 +1,47 @@
+{
+    "type": "object",
+    "properties": {
+        "self": {
+            "type": "string",
+            "format": "uri",
+            "minimum": 1
+        },
+        "first": {
+            "type": "string",
+            "format": "uri",
+            "minimum": 1
+        },
+        "prev": {
+            "type": "string",
+            "format": "uri",
+            "minimum": 1
+        },
+        "next": {
+            "type": "string",
+            "format": "uri",
+            "minimum": 1
+        },
+        "total": {
+            "type": "number",
+            "format": "integer",
+            "minimum": 0
+        },
+        "offset": {
+            "type": "number",
+            "format": "integer",
+            "minimum": 0
+        },
+        "data": {
+            "type": "array",
+            "items": {
+                "$ref": "attribute_get.json"
+            }
+        }
+    },
+    "required": [
+        "self",
+        "total",
+        "offset",
+        "data"
+    ]
+}
