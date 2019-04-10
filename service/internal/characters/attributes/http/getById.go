@@ -1,12 +1,11 @@
 package http
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
 
+	"github.com/sazzer/wyrdwest/service/internal/api"
 	"github.com/sazzer/wyrdwest/service/internal/api/problems"
 
 	uuid "github.com/satori/go.uuid"
@@ -46,9 +45,5 @@ func getByID(w http.ResponseWriter, r *http.Request, retriever attributes.Retrie
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(Attribute{
-		Self:        fmt.Sprintf("/attributes/%s", idVal),
-		Name:        attribute.Name,
-		Description: attribute.Description,
-	})
+	api.WriteJSON(w, buildAttribute(attribute))
 }
