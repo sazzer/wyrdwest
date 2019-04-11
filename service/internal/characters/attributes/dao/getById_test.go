@@ -11,12 +11,12 @@ import (
 
 func (suite *DAOSuite) TestGetUnknownByID() {
 	var (
-		id = uuid.NewV4()
+		id = uuid.NewV4().String()
 	)
 
 	rows := sqlmock.NewRows([]string{})
 	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes WHERE attribute_id = \\$1").
-		WithArgs(id.String()).
+		WithArgs(id).
 		RowsWillBeClosed().
 		WillReturnRows(rows)
 
@@ -28,17 +28,17 @@ func (suite *DAOSuite) TestGetUnknownByID() {
 
 func (suite *DAOSuite) TestGetKnownByID() {
 	var (
-		id      = uuid.NewV4()
-		version = uuid.NewV4()
+		id      = uuid.NewV4().String()
+		version = uuid.NewV4().String()
 	)
 
 	now := time.Now()
 
 	rows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
-	rows.AddRow(id.String(), version.String(), now, now, "Strength", "How strong I am")
+	rows.AddRow(id, version, now, now, "Strength", "How strong I am")
 
 	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes WHERE attribute_id = \\$1").
-		WithArgs(id.String()).
+		WithArgs(id).
 		RowsWillBeClosed().
 		WillReturnRows(rows)
 
@@ -57,11 +57,11 @@ func (suite *DAOSuite) TestGetKnownByID() {
 
 func (suite *DAOSuite) TestGetDatabaseError() {
 	var (
-		id = uuid.NewV4()
+		id = uuid.NewV4().String()
 	)
 
 	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes WHERE attribute_id = \\$1").
-		WithArgs(id.String()).
+		WithArgs(id).
 		WillReturnError(errors.New("It be broke"))
 
 	attribute, err := suite.testSubject.GetAttributeByID(attributes.AttributeID(id))

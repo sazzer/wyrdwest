@@ -24,7 +24,7 @@ func (suite HTTPSuite) testGetByID(id string) *httptest.ResponseRecorder {
 
 func (suite *HTTPSuite) TestGetUnknownAttributeByID() {
 	suite.mockRetriever.EXPECT().
-		GetAttributeByID(attributes.AttributeID(uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")))).
+		GetAttributeByID(attributes.AttributeID("00000000-0000-0000-0000-000000000000")).
 		Return(attributes.Attribute{}, attributes.AttributeNotFoundError{}).
 		Times(1)
 
@@ -52,12 +52,12 @@ func (suite *HTTPSuite) TestGetAttributeInvalidID() {
 }
 
 func (suite *HTTPSuite) TestGetKnownAttributeByID() {
-	id := attributes.AttributeID(uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")))
+	id := attributes.AttributeID("00000000-0000-0000-0000-000000000000")
 	suite.mockRetriever.EXPECT().
 		GetAttributeByID(id).
 		Return(attributes.Attribute{
 			ID:          id,
-			Version:     uuid.NewV4(),
+			Version:     uuid.NewV4().String(),
 			Created:     time.Now(),
 			Updated:     time.Now(),
 			Name:        "Strength",
@@ -78,7 +78,7 @@ func (suite *HTTPSuite) TestGetKnownAttributeByID() {
 
 func (suite *HTTPSuite) TestGetUnexpectedError() {
 	suite.mockRetriever.EXPECT().
-		GetAttributeByID(attributes.AttributeID(uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")))).
+		GetAttributeByID(attributes.AttributeID("00000000-0000-0000-0000-000000000000")).
 		Return(attributes.Attribute{}, errors.New("Oops")).
 		Times(1)
 

@@ -3,8 +3,6 @@ package http
 import (
 	"fmt"
 
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes"
 )
 
@@ -28,7 +26,7 @@ type Attributes struct {
 
 func buildAttribute(attribute attributes.Attribute) Attribute {
 	return Attribute{
-		Self:        fmt.Sprintf("/attributes/%s", uuid.UUID(attribute.ID).String()),
+		Self:        fmt.Sprintf("/attributes/%s", attribute.ID),
 		Name:        attribute.Name,
 		Description: attribute.Description,
 	}

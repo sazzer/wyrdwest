@@ -3,7 +3,6 @@ package dao
 import (
 	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes"
 	"github.com/sazzer/wyrdwest/service/internal/database"
 	"github.com/sirupsen/logrus"
@@ -14,7 +13,7 @@ func (dao AttributesDao) GetAttributeByID(id attributes.AttributeID) (attributes
 	sqlBuilder := squirrel.
 		Select("*").
 		From("attributes").
-		Where(squirrel.Eq{"attribute_id": uuid.UUID(id).String()}).
+		Where(squirrel.Eq{"attribute_id": id}).
 		PlaceholderFormat(squirrel.Dollar)
 
 	resultRow := dbAttribute{}

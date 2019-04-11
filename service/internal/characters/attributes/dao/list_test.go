@@ -96,16 +96,16 @@ func (suite *DAOSuite) TestGetNoRows() {
 
 func (suite *DAOSuite) TestGetOnlyPage() {
 	var (
-		strengthID          = uuid.NewV4()
-		strengthVersion     = uuid.NewV4()
-		intelligenceID      = uuid.NewV4()
-		intelligenceVersion = uuid.NewV4()
+		strengthID          = uuid.NewV4().String()
+		strengthVersion     = uuid.NewV4().String()
+		intelligenceID      = uuid.NewV4().String()
+		intelligenceVersion = uuid.NewV4().String()
 		now                 = time.Now()
 	)
 
 	rows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
-	rows.AddRow(strengthID.String(), strengthVersion.String(), now, now, "Strength", "How strong I am")
-	rows.AddRow(intelligenceID.String(), intelligenceVersion.String(), now, now, "Intelligence", "How intelligent I am")
+	rows.AddRow(strengthID, strengthVersion, now, now, "Strength", "How strong I am")
+	rows.AddRow(intelligenceID, intelligenceVersion, now, now, "Intelligence", "How intelligent I am")
 	suite.mockCtrl.ExpectQuery("SELECT \\* FROM attributes ORDER BY name ASC, attribute_id DESC LIMIT 10 OFFSET 0").
 		RowsWillBeClosed().
 		WillReturnRows(rows)

@@ -104,14 +104,14 @@ func (suite *HTTPSuite) TestParamsNoResponse() {
 }
 
 func (suite *HTTPSuite) TestNoParamsResponse() {
-	id1 := attributes.AttributeID(uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")))
-	id2 := attributes.AttributeID(uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000001")))
+	id1 := attributes.AttributeID("00000000-0000-0000-0000-000000000000")
+	id2 := attributes.AttributeID("00000000-0000-0000-0000-000000000001")
 
 	response := attributes.AttributePage{
 		Data: []attributes.Attribute{
 			{
 				ID:          id1,
-				Version:     uuid.NewV4(),
+				Version:     uuid.NewV4().String(),
 				Created:     time.Now(),
 				Updated:     time.Now(),
 				Name:        "Strength",
@@ -119,7 +119,7 @@ func (suite *HTTPSuite) TestNoParamsResponse() {
 			},
 			{
 				ID:          id2,
-				Version:     uuid.NewV4(),
+				Version:     uuid.NewV4().String(),
 				Created:     time.Now(),
 				Updated:     time.Now(),
 				Name:        "Intelligence",

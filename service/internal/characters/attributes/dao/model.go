@@ -3,7 +3,6 @@ package dao
 import (
 	"time"
 
-	uuid "github.com/satori/go.uuid"
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes"
 )
 
@@ -19,8 +18,8 @@ type dbAttribute struct {
 // ToAPI converts a Database Model into an API Model
 func (a dbAttribute) ToAPI() attributes.Attribute {
 	return attributes.Attribute{
-		ID:          attributes.AttributeID(uuid.FromStringOrNil(a.ID)),
-		Version:     uuid.FromStringOrNil(a.Version),
+		ID:          attributes.AttributeID(a.ID),
+		Version:     a.Version,
 		Created:     a.Created,
 		Updated:     a.Updated,
 		Name:        a.Name,

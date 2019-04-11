@@ -15,7 +15,7 @@ import (
 
 func getByID(w http.ResponseWriter, r *http.Request, retriever attributes.Retriever) {
 	idVal := chi.URLParam(r, "id")
-	parsedID, err := uuid.FromString(idVal)
+	_, err := uuid.FromString(idVal)
 	if err != nil {
 		problems.Write(w, problems.Problem{
 			Type:   "tag:wyrdwest,2019:problems/attributes/unknown-attribute",
@@ -25,7 +25,7 @@ func getByID(w http.ResponseWriter, r *http.Request, retriever attributes.Retrie
 		return
 	}
 
-	attribute, err := retriever.GetAttributeByID(attributes.AttributeID(parsedID))
+	attribute, err := retriever.GetAttributeByID(attributes.AttributeID(idVal))
 	if err != nil {
 		switch err.(type) {
 		case attributes.AttributeNotFoundError:
