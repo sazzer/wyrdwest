@@ -97,6 +97,8 @@ func (suite *HTTPSuite) TestParamsNoResponse() {
 	g.Expect(rec.Code).To(Equal(200))
 	g.Expect(rec.Body).To(MatchJSON(`{
 		"self": "/attributes?offset=10&count=5&name=Strength&sort=-name",
+		"first": "/attributes?offset=0&count=5&name=Strength&sort=-name",
+		"prev": "/attributes?offset=5&count=5&name=Strength&sort=-name",
 		"offset": 10,
 		"total": 0,
 		"data": []
@@ -152,6 +154,47 @@ func (suite *HTTPSuite) TestNoParamsResponse() {
 			  "self": "/attributes/00000000-0000-0000-0000-000000000001",
 			  "name": "Intelligence",
 			  "description": "How Smart I am"
+			}
+		]
+	}`))
+}
+
+func (suite *HTTPSuite) TestParamsResponse() {
+	id1 := attributes.AttributeID("00000000-0000-0000-0000-000000000000")
+
+	response := attributes.AttributePage{
+		Data: []attributes.Attribute{
+			{
+				ID:          id1,
+				Version:     uuid.NewV4().String(),
+				Created:     time.Now(),
+				Updated:     time.Now(),
+				Name:        "Strength",
+				Description: "How Strong I am",
+			},
+		},
+	}
+	response.TotalSize = 2
+
+	suite.mockRetriever.EXPECT().
+		ListAttributes(attributes.AttributeMatchCriteria{}, []service.SortField{}, uint64(0), uint64(1)).
+		Return(response, nil).
+		Times(1)
+
+	rec := suite.testList("?offset=0&count=1")
+
+	g := NewGomegaWithT(suite.T())
+	g.Expect(rec.Code).To(Equal(200))
+	g.Expect(rec.Body).To(MatchJSON(`{
+		"self": "/attributes?offset=0&count=1",
+		"next": "/attributes?offset=1&count=1",
+		"offset": 0,
+		"total": 2,
+		"data": [
+			{
+			  "self": "/attributes/00000000-0000-0000-0000-000000000000",
+			  "name": "Strength",
+			  "description": "How Strong I am"
 			}
 		]
 	}`))

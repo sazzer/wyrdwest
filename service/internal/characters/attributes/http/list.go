@@ -123,8 +123,32 @@ func list(w http.ResponseWriter, r *http.Request, retriever attributes.Retriever
 	}
 	selfURL := uritemplate.BuildURI("/attributes{?offset,count,name,sort}", query)
 
+	firstURL := ""
+	nextURL := ""
+	prevURL := ""
+
+	if offset > 0 {
+		if offset > count {
+			query["offset"] = offset - count
+		} else {
+			query["offset"] = 0
+		}
+		prevURL = uritemplate.BuildURI("/attributes{?offset,count,name,sort}", query)
+
+		query["offset"] = 0
+		firstURL = uritemplate.BuildURI("/attributes{?offset,count,name,sort}", query)
+	}
+
+	if offset+count < attributesData.PageInfo.TotalSize {
+		query["offset"] = offset + count
+		nextURL = uritemplate.BuildURI("/attributes{?offset,count,name,sort}", query)
+	}
+
 	api.WriteJSON(w, Attributes{
 		Self:   selfURL,
+		First:  firstURL,
+		Next:   nextURL,
+		Prev:   prevURL,
 		Offset: offset,
 		Total:  attributesData.PageInfo.TotalSize,
 		Data:   results,

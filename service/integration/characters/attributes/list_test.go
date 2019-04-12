@@ -21,6 +21,8 @@ func (suite *Suite) TestGetNoAttributesNoParams() {
 func (suite *Suite) TestGetNoAttributesParams() {
 	expected := `{
         "self": "/attributes?offset=10&count=5&name=Strength&sort=-name",
+        "first": "/attributes?offset=0&count=5&name=Strength&sort=-name",
+        "prev": "/attributes?offset=5&count=5&name=Strength&sort=-name",
         "offset": 10,
         "total": 0,
         "data": []
@@ -188,6 +190,8 @@ func (suite *Suite) TestGetAttributes() {
 			params: map[string]string{"offset": "1"},
 			expected: `{
                 "self": "/attributes?offset=1&count=10",
+                "first": "/attributes?offset=0&count=10",
+                "prev": "/attributes?offset=0&count=10",
                 "offset": 1,
                 "total": 2,
                 "data": [
@@ -204,6 +208,7 @@ func (suite *Suite) TestGetAttributes() {
 			params: map[string]string{"count": "1"},
 			expected: `{
                 "self": "/attributes?offset=0&count=1",
+                "next": "/attributes?offset=1&count=1",
                 "offset": 0,
                 "total": 2,
                 "data": [
