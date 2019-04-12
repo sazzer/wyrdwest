@@ -4,7 +4,7 @@ import "fmt"
 
 func (suite *Suite) TestGetNoAttributesNoParams() {
 	expected := `{
-        "self": "/attributes",
+        "self": "/attributes?offset=0&count=10",
         "offset": 0,
         "total": 0,
         "data": []
@@ -20,7 +20,7 @@ func (suite *Suite) TestGetNoAttributesNoParams() {
 
 func (suite *Suite) TestGetNoAttributesParams() {
 	expected := `{
-        "self": "/attributes",
+        "self": "/attributes?offset=10&count=5&name=Strength&sort=-name",
         "offset": 10,
         "total": 0,
         "data": []
@@ -118,7 +118,7 @@ func (suite *Suite) TestGetOneAttributesNoParams() {
     `)
 
 	expected := `{
-        "self": "/attributes",
+        "self": "/attributes?offset=0&count=10",
         "offset": 0,
         "total": 1,
         "data": [
@@ -166,7 +166,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "No Params",
 			params: map[string]string{},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10",
                 "offset": 0,
                 "total": 2,
                 "data": [
@@ -187,7 +187,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Offset=1",
 			params: map[string]string{"offset": "1"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=1&count=10",
                 "offset": 1,
                 "total": 2,
                 "data": [
@@ -203,7 +203,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Count=1",
 			params: map[string]string{"count": "1"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=1",
                 "offset": 0,
                 "total": 2,
                 "data": [
@@ -219,7 +219,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Sort Name Descending",
 			params: map[string]string{"sort": "-name"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&sort=-name",
                 "offset": 0,
                 "total": 2,
                 "data": [
@@ -240,7 +240,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Sort Created Ascending",
 			params: map[string]string{"sort": "+created"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&sort=%2Bcreated",
                 "offset": 0,
                 "total": 2,
                 "data": [
@@ -261,7 +261,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Sort Unknown",
 			params: map[string]string{"sort": "unknown"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&sort=unknown",
                 "offset": 0,
                 "total": 2,
                 "data": [
@@ -282,7 +282,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Filtered name=strength",
 			params: map[string]string{"name": "strength"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&name=strength",
                 "offset": 0,
                 "total": 1,
                 "data": [
@@ -298,7 +298,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Filtered name=STRENGTH",
 			params: map[string]string{"name": "STRENGTH"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&name=STRENGTH",
                 "offset": 0,
                 "total": 1,
                 "data": [
@@ -314,7 +314,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Filtered name=Strength",
 			params: map[string]string{"name": "Strength"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&name=Strength",
                 "offset": 0,
                 "total": 1,
                 "data": [
@@ -330,7 +330,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Filtered name=Other",
 			params: map[string]string{"name": "Other"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&name=Other",
                 "offset": 0,
                 "total": 0,
                 "data": []
@@ -340,7 +340,7 @@ func (suite *Suite) TestGetAttributes() {
 			name:   "Filtered name=☃",
 			params: map[string]string{"name": "☃"},
 			expected: `{
-                "self": "/attributes",
+                "self": "/attributes?offset=0&count=10&name=%E2%98%83",
                 "offset": 0,
                 "total": 0,
                 "data": []

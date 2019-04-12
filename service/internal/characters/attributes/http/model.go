@@ -1,7 +1,7 @@
 package http
 
 import (
-	"fmt"
+	"github.com/sazzer/wyrdwest/service/internal/api/uritemplate"
 
 	"github.com/sazzer/wyrdwest/service/internal/characters/attributes"
 )
@@ -26,7 +26,7 @@ type Attributes struct {
 
 func buildAttribute(attribute attributes.Attribute) Attribute {
 	return Attribute{
-		Self:        fmt.Sprintf("/attributes/%s", attribute.ID),
+		Self:        uritemplate.BuildURI("/attributes{/id}", map[string]interface{}{"id": attribute.ID}),
 		Name:        attribute.Name,
 		Description: attribute.Description,
 	}

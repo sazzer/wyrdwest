@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/sazzer/wyrdwest/service/internal/api/uritemplate"
+
 	"github.com/sazzer/wyrdwest/service/internal/api"
 
 	"github.com/sazzer/wyrdwest/service/internal/api/problems"
@@ -31,6 +33,7 @@ type listParams struct {
 	offset     int
 	count      int
 	sorts      []service.SortField
+	rawSorts   string
 	nameFilter string
 }
 
@@ -63,6 +66,7 @@ func (params *listParams) parse(r *http.Request) []validation.Error {
 		})
 	}
 
+	params.rawSorts = r.URL.Query().Get("sort")
 	params.sorts = service.ParseSorts(r.URL.Query().Get("sort"))
 	params.nameFilter = r.URL.Query().Get("name")
 
@@ -75,6 +79,7 @@ func list(w http.ResponseWriter, r *http.Request, retriever attributes.Retriever
 		offset:     0,
 		count:      10,
 		sorts:      []service.SortField{},
+		rawSorts:   "",
 		nameFilter: "",
 	}
 	validationErrors := params.parse(r)
@@ -107,8 +112,19 @@ func list(w http.ResponseWriter, r *http.Request, retriever attributes.Retriever
 		results = append(results, buildAttribute(attribute))
 	}
 
+	query := make(map[string]interface{})
+	query["offset"] = offset
+	query["count"] = count
+	if params.nameFilter != "" {
+		query["name"] = params.nameFilter
+	}
+	if params.rawSorts != "" {
+		query["sort"] = params.rawSorts
+	}
+	selfURL := uritemplate.BuildURI("/attributes{?offset,count,name,sort}", query)
+
 	api.WriteJSON(w, Attributes{
-		Self:   "/attributes",
+		Self:   selfURL,
 		Offset: offset,
 		Total:  attributesData.PageInfo.TotalSize,
 		Data:   results,

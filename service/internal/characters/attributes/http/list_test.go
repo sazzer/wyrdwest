@@ -72,7 +72,7 @@ func (suite *HTTPSuite) TestNoParamsNoResponse() {
 	g := NewGomegaWithT(suite.T())
 	g.Expect(rec.Code).To(Equal(200))
 	g.Expect(rec.Body).To(MatchJSON(`{
-		"self": "/attributes",
+		"self": "/attributes?offset=0&count=10",
 		"offset": 0,
 		"total": 0,
 		"data": []
@@ -96,7 +96,7 @@ func (suite *HTTPSuite) TestParamsNoResponse() {
 	g := NewGomegaWithT(suite.T())
 	g.Expect(rec.Code).To(Equal(200))
 	g.Expect(rec.Body).To(MatchJSON(`{
-		"self": "/attributes",
+		"self": "/attributes?offset=10&count=5&name=Strength&sort=-name",
 		"offset": 10,
 		"total": 0,
 		"data": []
@@ -139,7 +139,7 @@ func (suite *HTTPSuite) TestNoParamsResponse() {
 	g := NewGomegaWithT(suite.T())
 	g.Expect(rec.Code).To(Equal(200))
 	g.Expect(rec.Body).To(MatchJSON(`{
-		"self": "/attributes",
+		"self": "/attributes?offset=0&count=10",
 		"offset": 0,
 		"total": 2,
 		"data": [
