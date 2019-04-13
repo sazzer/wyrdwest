@@ -1,5 +1,5 @@
 -- +migrate Up
-CREATE TABLE clients(
+CREATE TABLE oauth2_clients(
              client_id UUID NOT NULL PRIMARY KEY,
              version UUID NOT NULL,
              created TIMESTAMP NOT NULL,

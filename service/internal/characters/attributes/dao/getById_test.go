@@ -30,9 +30,8 @@ func (suite *DAOSuite) TestGetKnownByID() {
 	var (
 		id      = uuid.NewV4().String()
 		version = uuid.NewV4().String()
+		now     = time.Now()
 	)
-
-	now := time.Now()
 
 	rows := sqlmock.NewRows([]string{"attribute_id", "version", "created", "updated", "name", "description"})
 	rows.AddRow(id, version, now, now, "Strength", "How strong I am")
