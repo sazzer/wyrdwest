@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["Graham Cox <graham@grahamcox.co.uk>"]
 
 [dependencies]
+log = "0.4.6"
+log4rs = "0.8.3"
