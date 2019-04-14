@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate log;
 
-pub fn start() {
+use std::collections::HashMap;
+
+pub fn start(settings: HashMap<String, String>) {
     info!("Hello, world!");
+    info!("{:?}", settings);
 }
