@@ -8,3 +8,7 @@ root:
   level: debug
   appenders:
     - stdout
+
+loggers:
+  tokio_reactor:
+    level: info
