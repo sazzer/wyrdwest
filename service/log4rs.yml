@@ -12,3 +12,7 @@ root:
 loggers:
   tokio_reactor:
     level: info
+  actix_net::server::worker:
+    level: warn
+  actix_web::server::h1:
+    level: info

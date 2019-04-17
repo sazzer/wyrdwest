@@ -1,24 +1,43 @@
+mod health;
+
 #[macro_use]
 extern crate log;
-extern crate actix_web;
+#[macro_use]
+extern crate assert_json_diff;
+#[macro_use]
+extern crate serde_json;
 
 use std::collections::HashMap;
-use actix_web::{middleware, web, App, HttpRequest, HttpServer};
+use std::sync::Arc;
+use actix_web::{server, middleware};
+use crate::health::healthchecks::Healthcheck;
 
-fn index(req: HttpRequest) -> &'static str {
-    "Hello world!"
+struct FailingHealthcheck {}
+
+impl Healthcheck for FailingHealthcheck {
+    fn check(&self) -> Result<String, String> {
+        Err("It Failed".to_string())
+    }
 }
 
-pub fn start(settings: HashMap<String, String>) {
-    info!("Hello, world!");
-    info!("{:?}", settings);
+struct PassingHealthcheck {}
 
-    let server = HttpServer::new(|| {
-        App::new()
-            // enable logger
-            .wrap(middleware::Logger::default())
-            .wrap(middleware::cors::Cors::new())
-            .service(web::resource("/").to(index))
+impl Healthcheck for PassingHealthcheck {
+    fn check(&self) -> Result<String, String> {
+        Ok("It Failed".to_string())
+    }
+}
+
+// Actually start the application
+pub fn start(settings: HashMap<String, String>) {
+    let mut healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
+    healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck{}));
+    healthchecks.insert("passing".to_string(), Arc::new(PassingHealthcheck{}));
+
+    let server = server::new(move || {
+        vec![
+            health::http::new(healthchecks.clone()).middleware(middleware::Logger::default())
+        ]
     });
 
     let port = settings.get("port")
@@ -28,5 +47,5 @@ pub fn start(settings: HashMap<String, String>) {
     server
         .bind(port).unwrap()
         .workers(20)
-        .run().unwrap();
+        .run();
 }
