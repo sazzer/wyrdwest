@@ -31,8 +31,8 @@ impl Healthcheck for PassingHealthcheck {
 // Actually start the application
 pub fn start(settings: HashMap<String, String>) {
     let mut healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
-    healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck {}));
     healthchecks.insert("passing".to_string(), Arc::new(PassingHealthcheck {}));
+    healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck {}));
 
     let server = server::new(move || {
         vec![health::http::new(healthchecks.clone()).middleware(middleware::Logger::default())]
