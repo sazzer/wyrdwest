@@ -1,6 +1,6 @@
-extern crate wyrdwest_service;
-extern crate log4rs;
 extern crate config;
+extern crate log4rs;
+extern crate wyrdwest_service;
 
 use std::collections::HashMap;
 use std::env;
@@ -13,7 +13,9 @@ fn main() {
     settings.set_default("port", port).unwrap();
 
     // Then merge in all of the environment variables that are prefixed with WYRDWEST
-    settings.merge(config::Environment::with_prefix("WYRDWEST")).unwrap();
+    settings
+        .merge(config::Environment::with_prefix("WYRDWEST"))
+        .unwrap();
 
     // Load the logging configuration to use
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();

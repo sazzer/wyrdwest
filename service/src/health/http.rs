@@ -1,8 +1,8 @@
-use std::sync::Arc;
-use std::collections::HashMap;
-use actix_web::{HttpRequest, HttpResponse, App, dev::Handler, http::StatusCode};
-use serde::Serialize;
 use crate::health::healthchecks::Healthcheck;
+use actix_web::{dev::Handler, http::StatusCode, App, HttpRequest, HttpResponse};
+use serde::Serialize;
+use std::collections::HashMap;
+use std::sync::Arc;
 
 // The result of a healthcheck was a success
 const RESULT_SUCCESS: &str = "OK";
@@ -49,16 +49,24 @@ impl<S> Handler<S> for HealthcheckHandler {
 
         for (key, value) in &self.handlers {
             let healthcheck_result = match value.check() {
-                Ok(detail) => ComponentResult { result: RESULT_SUCCESS, detail: detail },
+                Ok(detail) => ComponentResult {
+                    result: RESULT_SUCCESS,
+                    detail: detail,
+                },
                 Err(detail) => {
                     result.result = RESULT_FAIL;
                     status = StatusCode::SERVICE_UNAVAILABLE;
 
-                    ComponentResult { result: RESULT_FAIL, detail: detail }
-                },
+                    ComponentResult {
+                        result: RESULT_FAIL,
+                        detail: detail,
+                    }
+                }
             };
 
-            result.components.insert(key.to_string(), healthcheck_result);
+            result
+                .components
+                .insert(key.to_string(), healthcheck_result);
         }
 
         info!("Overall system health: {}", result.result);
@@ -69,26 +77,21 @@ impl<S> Handler<S> for HealthcheckHandler {
 
 // Build the Actix App that will process healthchecks
 pub fn new(handlers: HashMap<String, Arc<Healthcheck>>) -> App<()> {
-    let handler = HealthcheckHandler {
-        handlers: handlers,
-    };
+    let handler = HealthcheckHandler { handlers: handlers };
 
-    App::new()
-        .prefix("/health")
-        .resource("", |r| {
-            r.get().h(handler);
-        })
+    App::new().prefix("/health").resource("", |r| {
+        r.get().h(handler);
+    })
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-    use std::sync::Arc;
-    use std::str;
+    use crate::health::healthchecks::Healthcheck;
     use actix_web::{http, test, HttpMessage};
     use serde_json;
-    use crate::health::healthchecks::Healthcheck;
-
+    use std::collections::HashMap;
+    use std::str;
+    use std::sync::Arc;
 
     struct PassingHealthcheck {}
 
@@ -107,11 +110,17 @@ mod tests {
     }
 
     // Actually run a test of the healthchecks handler
-    fn run_test(healthchecks: HashMap<String, Arc<Healthcheck>>, status_code: http::StatusCode, expected_response: serde_json::Value) {
+    fn run_test(
+        healthchecks: HashMap<String, Arc<Healthcheck>>,
+        status_code: http::StatusCode,
+        expected_response: serde_json::Value,
+    ) {
         let mut server = test::TestServer::with_factory(move || super::new(healthchecks.clone()));
 
-        let request = server.client(http::Method::GET, "/health")
-            .finish().unwrap();
+        let request = server
+            .client(http::Method::GET, "/health")
+            .finish()
+            .unwrap();
         let response = server.execute(request.send()).unwrap();
 
         assert_eq!(status_code, response.status());
@@ -126,62 +135,78 @@ mod tests {
     fn test_check_no_components() {
         let healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
 
-        run_test(healthchecks, http::StatusCode::OK, json!({
-            "result": "OK",
-            "components": {}
-        }));
+        run_test(
+            healthchecks,
+            http::StatusCode::OK,
+            json!({
+                "result": "OK",
+                "components": {}
+            }),
+        );
     }
 
     #[test]
     fn test_check_passing_components() {
         let mut healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
-        healthchecks.insert("passing".to_string(), Arc::new(PassingHealthcheck{}));
+        healthchecks.insert("passing".to_string(), Arc::new(PassingHealthcheck {}));
 
-        run_test(healthchecks, http::StatusCode::OK, json!({
-            "result": "OK",
-            "components": {
-                "passing": {
-                    "result": "OK",
-                    "detail": "Test Passed"
+        run_test(
+            healthchecks,
+            http::StatusCode::OK,
+            json!({
+                "result": "OK",
+                "components": {
+                    "passing": {
+                        "result": "OK",
+                        "detail": "Test Passed"
+                    }
                 }
-            }
-        }));
+            }),
+        );
     }
 
     #[test]
     fn test_check_failing_components() {
         let mut healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
-        healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck{}));
+        healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck {}));
 
-        run_test(healthchecks, http::StatusCode::SERVICE_UNAVAILABLE, json!({
-            "result": "FAIL",
-            "components": {
-                "failing": {
-                    "result": "FAIL",
-                    "detail": "Test Failed"
+        run_test(
+            healthchecks,
+            http::StatusCode::SERVICE_UNAVAILABLE,
+            json!({
+                "result": "FAIL",
+                "components": {
+                    "failing": {
+                        "result": "FAIL",
+                        "detail": "Test Failed"
+                    }
                 }
-            }
-        }));
+            }),
+        );
     }
 
     #[test]
     fn test_check_mixed_components() {
         let mut healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
-        healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck{}));
-        healthchecks.insert("passing".to_string(), Arc::new(PassingHealthcheck{}));
+        healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck {}));
+        healthchecks.insert("passing".to_string(), Arc::new(PassingHealthcheck {}));
 
-        run_test(healthchecks, http::StatusCode::SERVICE_UNAVAILABLE, json!({
-            "result": "FAIL",
-            "components": {
-                "failing": {
-                    "result": "FAIL",
-                    "detail": "Test Failed"
-                },
-                "passing": {
-                    "result": "OK",
-                    "detail": "Test Passed"
+        run_test(
+            healthchecks,
+            http::StatusCode::SERVICE_UNAVAILABLE,
+            json!({
+                "result": "FAIL",
+                "components": {
+                    "failing": {
+                        "result": "FAIL",
+                        "detail": "Test Failed"
+                    },
+                    "passing": {
+                        "result": "OK",
+                        "detail": "Test Passed"
+                    }
                 }
-            }
-        }));
+            }),
+        );
     }
 }
