@@ -1,12 +1,13 @@
-extern crate config;
-extern crate log4rs;
 extern crate wyrdwest_service;
+use ::wyrdwest_service::start;
 
 use std::collections::HashMap;
 use std::env;
+use config::Config;
+use log4rs;
 
 fn main() {
-    let mut settings = config::Config::default();
+    let mut settings = Config::default();
 
     // Default port value is either the environment variable "PORT" or the value "3000", as appropriate
     let port = env::var("PORT").unwrap_or("3000".to_string());
@@ -20,5 +21,5 @@ fn main() {
     // Load the logging configuration to use
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
 
-    wyrdwest_service::start(settings.try_into::<HashMap<String, String>>().unwrap())
+    start(settings.try_into::<HashMap<String, String>>().unwrap())
 }

@@ -88,7 +88,8 @@ pub fn new(handlers: HashMap<String, Arc<Healthcheck>>) -> App<()> {
 mod tests {
     use crate::health::healthchecks::Healthcheck;
     use actix_web::{http, test, HttpMessage};
-    use serde_json;
+    use serde_json::json;
+    use assert_json_diff::assert_json_eq;
     use std::collections::HashMap;
     use std::str;
     use std::sync::Arc;

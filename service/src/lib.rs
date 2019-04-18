@@ -2,10 +2,6 @@ mod health;
 
 #[macro_use]
 extern crate log;
-#[macro_use]
-extern crate assert_json_diff;
-#[macro_use]
-extern crate serde_json;
 
 use crate::health::healthchecks::Healthcheck;
 use actix_web::{middleware, server};
