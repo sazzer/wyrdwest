@@ -80,6 +80,6 @@ workflows:
   full_build: 
     jobs: 
       - build_service
-      - run_integration
+      - run_integration:
           requires:
             - build_service
