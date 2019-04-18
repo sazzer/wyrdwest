@@ -6,6 +6,7 @@ RUN mkdir src && touch src/lib.rs
 RUN cargo fetch
 RUN cargo build --release
 
+RUN rm -rf /wyrdwest/service/src
 COPY src /wyrdwest/service/src
 RUN cargo build --release
 
