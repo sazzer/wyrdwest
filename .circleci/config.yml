@@ -53,8 +53,33 @@ jobs:
           paths: 
             - wyrdwest-service.tar
 
+  run_integration:
+    docker: 
+      - image: "circleci/node:11.4.0"
+    
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - attach_workspace: 
+          at: /tmp/workspace
+
+      - run: 
+          name: "Load Docker Images"
+          command: |
+              docker load -i /tmp/workspace/wyrdwest-service.tar
+
+      - run:
+          name: "Run tests"
+          working_directory: ~/repo/integration
+          command: yarn run integration
+
 workflows: 
   version: 2
   full_build: 
     jobs: 
       - build_service
+      - run_integration
+          requires:
+            - build_service
