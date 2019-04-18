@@ -23,6 +23,7 @@ services:
         image: uk.co.grahamcox.wyrdwest/wyrdwest-service:latest
         environment:
             PORT: 3000
+            WYRDWEST_DB_URI: host=wyrdwest-postgres port=5432 user=wyrdwest password=wyrdwest
             DOCKERIZE_WAIT: -wait tcp://wyrdwest-postgres:5432
         ports:
             - "127.0.0.1:33000:3000"
