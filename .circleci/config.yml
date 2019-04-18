@@ -1,0 +1,60 @@
+version: 2.0
+
+jobs:
+  build_service:
+    docker:
+      - image: circleci/rust:1.34.0
+    
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - "rust-dependencies-{{ checksum \"service/Cargo.lock\" }}"
+            - "rust-dependencies-"
+
+      - setup_remote_docker
+
+      - run:
+          name: "Get Dependencies"
+          working_directory: ~/repo/service
+          command: cargo fetch
+
+      - run:
+          name: "Build and Test"
+          working_directory: ~/repo/service
+          command: |
+            cargo check
+            cargo test
+            cargo build
+      
+      - save_cache:
+          key: "rust-dependencies-{{ checksum \"service/Cargo.lock\" }}"
+          paths:
+            - ~/.cargo
+            - ~/repo/service/target/debug/deps
+        
+      - run:
+          name: "Build Docker Image"
+          working_directory: ~/repo/service
+          command: |
+            ./build-docker.sh
+
+      - run: 
+          name: "Export Docker image"
+          command: |
+            mkdir -p /tmp/docker_images
+            docker save -o /tmp/docker_images/wyrdwest-service.tar uk.co.grahamcox.wyrdwest/wyrdwest-service:latest
+
+      - persist_to_workspace: 
+          root: /tmp/docker_images
+          paths: 
+            - wyrdwest-service.tar
+
+workflows: 
+  version: 2
+  full_build: 
+    jobs: 
+      - build_service
