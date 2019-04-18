@@ -6,22 +6,28 @@ services:
             POSTGRES_DB: wyrdwest
             POSTGRES_USER: wyrdwest
             POSTGRES_PASSWORD: wyrdwest
+        ports:
+            - "127.0.0.1:35432:5432"
         networks:
-            - wyrdwest-integration
+            - wyrdwest-dev
+    wyrdwest-phppgadmin:
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: graham@grahamcox.co.uk
+            PGADMIN_DEFAULT_PASSWORD: wyrdwest
+        ports:
+            - "127.0.0.1:38090:80"
+        networks:
+            - wyrdwest-dev
     wyrdwest-service:
         image: uk.co.grahamcox.wyrdwest/wyrdwest-service:latest
         environment:
             PORT: 3000
             DOCKERIZE_WAIT: -wait tcp://wyrdwest-postgres:5432
+        ports:
+            - "127.0.0.1:33000:3000"
         networks:
-            - wyrdwest-integration
-    wyrdwest-integration:
-        build:
-            context: .
-        environment:
-            SERVICE_URI: http://wyrdwest-service:3000
-        networks:
-            - wyrdwest-integration
+            - wyrdwest-dev
 networks:
-    wyrdwest-integration:
+    wyrdwest-dev:
 

@@ -11,7 +11,7 @@
     "jest": "^24.7.1"
   },
   "scripts": {
-    "integration": "docker-compose up --exit-code-from=wyrdwest-integration --build --force-recreate --always-recreate-deps"
+    "integration": "docker-compose -p wyrdwest-integration up --exit-code-from=wyrdwest-integration --build --force-recreate --always-recreate-deps"
   },
   "jest": {
     "setupFilesAfterEnv": [
