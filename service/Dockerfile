@@ -4,7 +4,6 @@ WORKDIR /wyrdwest/service
 COPY Cargo.* /wyrdwest/service/
 RUN mkdir src && touch src/lib.rs
 RUN cargo fetch
-RUN cargo build
 
 RUN rm -rf /wyrdwest/service/src
 COPY src /wyrdwest/service/src
