@@ -1,0 +1,18 @@
+version: '3'
+services:
+    wyrdwest-service:
+        image: uk.co.grahamcox.wyrdwest/wyrdwest-service:latest
+        environment:
+            PORT: 3000
+        networks:
+            - wyrdwest-integration
+    wyrdwest-integration:
+        build:
+            context: .
+        environment:
+            SERVICE_URI: http://wyrdwest-service:3000
+        networks:
+            - wyrdwest-integration
+networks:
+    wyrdwest-integration:
+

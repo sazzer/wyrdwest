@@ -12,14 +12,6 @@ use actix_web::{middleware, server};
 use std::collections::HashMap;
 use std::sync::Arc;
 
-struct FailingHealthcheck {}
-
-impl Healthcheck for FailingHealthcheck {
-    fn check(&self) -> Result<String, String> {
-        Err("It Failed".to_string())
-    }
-}
-
 struct PassingHealthcheck {}
 
 impl Healthcheck for PassingHealthcheck {
@@ -32,7 +24,6 @@ impl Healthcheck for PassingHealthcheck {
 pub fn start(settings: HashMap<String, String>) {
     let mut healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
     healthchecks.insert("passing".to_string(), Arc::new(PassingHealthcheck {}));
-    healthchecks.insert("failing".to_string(), Arc::new(FailingHealthcheck {}));
 
     let server = server::new(move || {
         vec![health::http::new(healthchecks.clone()).middleware(middleware::Logger::default())]
