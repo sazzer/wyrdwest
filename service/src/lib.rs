@@ -1,3 +1,4 @@
+pub mod config;
 mod health;
 mod database;
 
@@ -11,7 +12,8 @@ use std::sync::Arc;
 use r2d2_postgres::PostgresConnectionManager;
 
 // Open the connection pool tot he database
-fn connect_to_database(url: &str) -> Arc<database::DatabaseWrapper> {
+fn connect_to_database(url: String) -> Arc<database::DatabaseWrapper> {
+    info!("Connecting to database: {}", url);
     let manager = PostgresConnectionManager::new(
         url.parse().unwrap(),
         postgres::NoTls,
@@ -24,8 +26,8 @@ fn connect_to_database(url: &str) -> Arc<database::DatabaseWrapper> {
 }
 
 // Actually start the application
-pub fn start(settings: HashMap<String, String>) {
-    let database = connect_to_database(settings.get("db_uri").unwrap());
+pub fn start(settings: config::Config) {
+    let database = connect_to_database(settings.db_uri);
 
     let mut healthchecks: HashMap<String, Arc<Healthcheck>> = HashMap::new();
     healthchecks.insert("database".to_string(), database);
@@ -34,10 +36,7 @@ pub fn start(settings: HashMap<String, String>) {
         vec![health::http::new(healthchecks.clone()).middleware(middleware::Logger::default())]
     });
 
-    let port = settings
-        .get("port")
-        .map(|port| format!("[::]:{}", port))
-        .unwrap();
+    let port = format!("[::]:{}", settings.port);
 
     server.bind(port).unwrap().workers(20).run();
 }
