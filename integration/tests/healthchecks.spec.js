@@ -7,9 +7,9 @@ describe('Healthchecks', () => {
             .expect('jsonStrict', {
                 "result": "OK",
                 "components": {
-                    "passing": {
+                    "database": {
                         "result": "OK",
-                        "detail": "It Failed"
+                        "detail": "Database OK"
                     }
                 }
             });
