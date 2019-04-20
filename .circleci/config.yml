@@ -12,8 +12,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - "rust-dependencies-{{ checksum \"service/Cargo.lock\" }}"
-            - "rust-dependencies-"
+            - "rust-dependencies--{{ checksum \"service/Cargo.lock\" }}"
 
       - setup_remote_docker
 
@@ -31,7 +30,7 @@ jobs:
             cargo build
       
       - save_cache:
-          key: "rust-dependencies-{{ checksum \"service/Cargo.lock\" }}"
+          key: "rust-dependencies--{{ checksum \"service/Cargo.lock\" }}"
           paths:
             - ~/.cargo
             - ~/repo/service/target/debug/deps
