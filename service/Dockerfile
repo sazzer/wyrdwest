@@ -22,5 +22,6 @@ WORKDIR /wyrdwest/service
 COPY --from=build /wyrdwest/service/target/debug/wyrdwest_service /wyrdwest/service/
 COPY log4rs.yml /wyrdwest/service/
 COPY docker/start.sh /wyrdwest/service
+COPY migrations/* /wyrdwest/service/migrations/
 
 CMD /wyrdwest/service/start.sh

@@ -16,6 +16,7 @@ bytes = "0.4.12"
 r2d2 = "0.8.4"
 r2d2_postgres = "0.15.0-rc.1"
 postgres = "0.16.0-rc.1"
+dbmigrate-lib = "0.1.4"
 
 [dev-dependencies]
 assert-json-diff = "1.0.0"
