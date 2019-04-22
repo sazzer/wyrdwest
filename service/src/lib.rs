@@ -1,6 +1,7 @@
 pub mod config;
 mod health;
 mod database;
+mod model;
 pub mod users;
 
 #[macro_use]
