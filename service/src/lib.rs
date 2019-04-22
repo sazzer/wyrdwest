@@ -1,6 +1,7 @@
 pub mod config;
 mod health;
 mod database;
+pub mod authentication;
 
 #[macro_use]
 extern crate log;
