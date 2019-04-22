@@ -33,33 +33,32 @@ pub fn compare_password(password: String, hash: String) -> Option<()> {
 
 #[cfg(test)]
 mod tests {
-    use proptest::prelude::*;
+    #[test]
+    fn rehash_is_different() {
+        let input = "password".to_owned();
 
-    proptest! {
-        #[test]
-        fn doesnt_crash(s in ".*") {
-            super::hash_password(s);
-        }
+        let hash1 = super::hash_password(input.clone());
+        let hash2 = super::hash_password(input.clone());
+        assert_ne!(hash1, hash2);
+    }
 
-        #[test]
-        fn rehash_is_different(s in ".*") {
-            let hash1 = super::hash_password(s.clone());
-            let hash2 = super::hash_password(s.clone());
-            assert_ne!(hash1, hash2);
-        }
+    #[test]
+    fn compares_pass_as_expected() {
+        let input = "password".to_owned();
 
-        #[test]
-        fn compares_pass_as_expected(s in ".*") {
-            let hash = super::hash_password(s.clone());
-            assert_eq!(Some(()), super::compare_password(s.clone(), hash));
-        }
+        let hash = super::hash_password(input.clone());
+        assert_eq!(Some(()), super::compare_password(input.clone(), hash));
+    }
 
-        #[test]
-        fn compares_fail_as_expected(s in ".*", s2 in ".*") {
-            if s != s2 {
-                let hash = super::hash_password(s);
-                assert_eq!(None, super::compare_password(s2, hash));
-            }
+    #[test]
+    fn compares_fail_as_expected() {
+        let hash = super::hash_password("password".to_owned());
+
+        let checks = vec![
+            "Password",
+        ];
+        for check in checks {
+            assert_eq!(None, super::compare_password(check.to_owned(), hash.clone()));
         }
     }
 }
