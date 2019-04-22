@@ -19,6 +19,7 @@ postgres = "0.16.0-rc.1"
 dbmigrate-lib = "0.1.4"
 rand = "0.3"
 rust-argon2 = "0.4.0"
+failure = "0.1.5"
 
 [dev-dependencies]
 assert-json-diff = "1.0.0"
