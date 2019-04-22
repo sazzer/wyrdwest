@@ -32,7 +32,8 @@ jobs:
       - save_cache:
           key: "rust-dependencies--{{ checksum \"service/Cargo.lock\" }}"
           paths:
-            - ~/.cargo
+            - ~/.cargo/registry
+            - /usr/local/cargo/registry
             - ~/repo/service/target/debug/deps
         
       - run:
