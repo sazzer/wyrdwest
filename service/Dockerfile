@@ -7,6 +7,7 @@ RUN cargo fetch
 
 RUN rm -rf /wyrdwest/service/src
 COPY src /wyrdwest/service/src
+COPY benches /wyrdwest/service/benches
 RUN cargo build
 
 FROM rust:1.34
