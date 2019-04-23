@@ -2,6 +2,7 @@
 pub type UserID = String;
 
 // Representation of the data that makes up a user
+#[derive(Debug)]
 pub struct UserData {
     name: String,
     email: String,

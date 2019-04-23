@@ -1,9 +1,3 @@
-pub mod config;
-mod health;
-mod database;
-mod model;
-pub mod users;
-
 #[macro_use]
 extern crate log;
 
@@ -12,6 +6,12 @@ use crate::database::migrations::MigratableDatabase;
 use actix_web::{middleware, server};
 use std::collections::HashMap;
 use std::sync::Arc;
+
+pub mod config;
+mod health;
+mod database;
+mod model;
+pub mod users;
 
 // Open the connection pool tot he database
 fn connect_to_database(url: String) -> Arc<database::DatabaseWrapper> {
