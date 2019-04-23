@@ -14,8 +14,6 @@ jobs:
           keys:
             - "rust-dependencies--{{ checksum \"service/Cargo.lock\" }}"
 
-      - setup_remote_docker
-
       - run:
           name: "Get Dependencies"
           working_directory: ~/repo/service
@@ -27,7 +25,6 @@ jobs:
           command: |
             cargo check
             cargo test
-            cargo build
 
       - save_cache:
           key: "rust-dependencies--{{ checksum \"service/Cargo.lock\" }}"
@@ -35,6 +32,17 @@ jobs:
             - ~/.cargo/registry
             - /usr/local/cargo/registry
             - ~/repo/service/target/debug/deps
+
+  build_service_docker:
+    docker:
+      - image: circleci/rust:1.34.0
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - setup_remote_docker
 
       - restore_cache:
           keys:
@@ -44,7 +52,7 @@ jobs:
           name: "Build Docker Image"
           working_directory: ~/repo/service
           command: |
-            [ -f /tmp/workspace/wyrdwest-service-layers.tar ] && docker load -i /tmp/workspace/wyrdwest-service-layers.tar
+            [ -f /tmp/docker_images/wyrdwest-service-layers.tar ] && docker load -i /tmp/docker_images/wyrdwest-service-layers.tar
             ./build-docker.sh
 
       - run:
@@ -98,6 +106,8 @@ workflows:
   full_build:
     jobs:
       - build_service
+      - build_service_docker
       - run_integration:
           requires:
             - build_service
+            - build_service_docker
