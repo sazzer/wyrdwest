@@ -1,3 +1,6 @@
-export * from './lib/async';
-export * from './lib/hash';
-export * from './lib/number';
+/* tslint:disable */
+function main() {
+  console.log('Hello');
+}
+
+main();

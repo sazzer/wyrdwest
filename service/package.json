@@ -9,6 +9,8 @@
   "keywords": [],
   "scripts": {
     "describe": "npm-scripts-info",
+    "start": "run-s test start:main",
+    "start:main": "node build/main/index.js",
     "build": "run-s clean && run-p build:*",
     "build:main": "tsc -p tsconfig.json",
     "fix": "run-s fix:*",
