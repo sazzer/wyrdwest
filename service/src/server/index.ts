@@ -22,9 +22,5 @@ export default function buildServer(): fastify.FastifyInstance<
   server.register(fastifyHelmet);
   server.register(fastifySensible);
 
-  server.get('/', (_, reply) => {
-    reply.send({ hello: 'world' });
-  });
-
   return server;
 }
