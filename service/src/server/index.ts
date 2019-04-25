@@ -4,11 +4,7 @@ import fastifyHelmet from 'fastify-helmet';
 import fastifySensible from 'fastify-sensible';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 
-export default function buildServer(): fastify.FastifyInstance<
-  Server,
-  IncomingMessage,
-  ServerResponse
-> {
+export default function buildServer(): fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> {
   const server = fastify({
     logger: true
   });
