@@ -52,6 +52,10 @@
     "node": ">=8.9"
   },
   "dependencies": {
+    "@types/convict": "^4.2.1",
+    "@types/dotenv": "^6.1.1",
+    "convict": "^4.4.1",
+    "dotenv": "^7.0.0",
     "fastify": "^2.3.0",
     "fastify-cors": "^2.1.2",
     "fastify-helmet": "^3.0.0",
