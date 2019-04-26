@@ -26,6 +26,12 @@ jobs:
             yarn test
             yarn nyc report --reporter=lcov | yarn codecov
             yarn cov:check
+      - setup_remote_docker
+      - run:
+          name: Build Docker Image
+          working_directory: ~/repo/service
+          command: |
+            yarn docker
 
 workflows:
   version: 2
