@@ -1,0 +1,13 @@
+version: '3'
+services:
+    wyrdwest-service:
+        image: uk.co.grahamcox.wyrdwest/wyrdwest-service:latest
+        environment: 
+            PORT: 8080
+        ports:
+            - "127.0.0.1:38080:8080"
+        networks:
+            - wyrdwest-dev
+networks:
+    wyrdwest-dev:
+
