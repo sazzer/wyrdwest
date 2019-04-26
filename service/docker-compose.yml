@@ -23,6 +23,7 @@ services:
         image: uk.co.grahamcox.wyrdwest/wyrdwest-service:latest
         environment: 
             PORT: 8080
+            PG_URI: postgresql://wyrdwest:wyrdwest@wyrdwest-postgres:5432/wyrdwest
             DOCKERIZE_WAIT: -wait tcp://wyrdwest-postgres:5432
         ports:
             - "127.0.0.1:38080:8080"

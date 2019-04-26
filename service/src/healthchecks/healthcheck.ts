@@ -8,7 +8,7 @@ export enum Status {
  */
 export interface HealthcheckResult {
   readonly status: Status;
-  readonly detail?: string;
+  readonly detail?: any;
 }
 
 /**

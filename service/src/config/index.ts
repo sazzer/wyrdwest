@@ -10,6 +10,14 @@ const configManifest = {
       env: 'PORT',
       format: 'port'
     }
+  },
+  pg: {
+    uri: {
+      default: '',
+      doc: 'The database URI to connect to',
+      env: 'PG_URI',
+      format: 'url'
+    }
   }
 };
 
