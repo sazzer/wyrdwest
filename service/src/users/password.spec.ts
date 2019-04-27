@@ -1,29 +1,23 @@
-import test from 'ava';
+import { fc, testProp } from 'ava-fast-check';
 import { checkPassword, hashPassword } from './password';
 
-test('Hash password', async t => {
-  const hash = await hashPassword('password');
-
-  t.notDeepEqual(hash, 'password');
+testProp('Hash password', [fc.string()], async password => {
+  const hash = await hashPassword(password);
+  return hash !== password;
 });
 
-test('Re-hash password', async t => {
-  const hash = await hashPassword('password');
-  const hash2 = await hashPassword('password');
-
-  t.notDeepEqual(hash, hash2);
+testProp('Re-hash password', [fc.string()], async password => {
+  const hash = await hashPassword(password);
+  const hash2 = await hashPassword(password);
+  return hash !== hash2;
 });
 
-test('Check password - Correct', async t => {
-  const hash = await hashPassword('password');
-  const result = await checkPassword(hash, 'password');
-
-  t.true(result);
+testProp('Check password - correct', [fc.string()], async password => {
+  const hash = await hashPassword(password);
+  return checkPassword(hash, password);
 });
 
-test('Check password - Incorrect', async t => {
+testProp('Check password - incorrect', [fc.string()], async password => {
   const hash = await hashPassword('password');
-  const result = await checkPassword(hash, 'password2');
-
-  t.false(result);
+  return !(await checkPassword(hash, password));
 });
