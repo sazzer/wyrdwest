@@ -1,9 +1,9 @@
 import { RouteOptions } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { loadConfig } from './config';
-import { Database } from './database';
+import { DatabaseWrapper } from './database/databaseWrapper';
 import { buildHealthcheckHandler } from './healthchecks/handlers';
-import buildServer from './server/index';
+import buildServer from './server';
 
 /**
  * Main entrypoint into the entire application
@@ -11,7 +11,7 @@ import buildServer from './server/index';
 async function main(): Promise<void> {
   const config = loadConfig();
 
-  const database = new Database(config.get('pg.uri'));
+  const database = new DatabaseWrapper(config.get('pg.uri'));
   await database.migrate();
 
   const handlers: ReadonlyArray<RouteOptions<Server, IncomingMessage, ServerResponse>> = [
