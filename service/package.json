@@ -57,6 +57,7 @@
     "@types/convict": "^4.2.1",
     "@types/dotenv": "^6.1.1",
     "@types/pg": "^7.4.14",
+    "argon2": "^0.21.0",
     "convict": "^4.4.1",
     "dotenv": "^7.0.0",
     "fastify": "^2.3.0",
