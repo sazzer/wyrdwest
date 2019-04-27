@@ -2,6 +2,7 @@ import { Database } from '../../database';
 import { NoRowsReturnedError } from '../../database/noRowsReturnedError';
 import { UserID, UserModel } from '../model';
 import { UserNotFoundError } from '../unknownUserError';
+import { parseDatabaseRow } from './model';
 
 /**
  * Get a User with the provided ID
@@ -11,12 +12,12 @@ import { UserNotFoundError } from '../unknownUserError';
  */
 export async function getUserById(database: Database, id: UserID): Promise<UserModel> {
   try {
-    await database.queryOne('SELECT * FROM users WHERE user_id = $1', id);
+    const userRow = await database.queryOne('SELECT * FROM users WHERE user_id = $1', id);
+    return parseDatabaseRow(userRow);
   } catch (e) {
     if (e instanceof NoRowsReturnedError) {
       throw new UserNotFoundError(id);
     }
     throw e;
   }
-  throw new UserNotFoundError(id);
 }
