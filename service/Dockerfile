@@ -12,7 +12,10 @@ ENV PORT=3000
 
 WORKDIR /wyrdwest/service
 
-# First download dependencies. This means that layer caching helps us out
+# Install Python for Argon2
+RUN apk add python python-dev py-pip build-base && pip install virtualenv
+
+# Download dependencies. This means that layer caching helps us out
 COPY package.json yarn.lock /wyrdwest/service/
 RUN yarn install
 
