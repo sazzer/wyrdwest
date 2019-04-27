@@ -1,3 +1,4 @@
+import { Identity } from './identity';
 /**
  * Representation of a Resource as it exists in the database
  */
