@@ -25,7 +25,9 @@
     "no-class": false,
     "no-mixed-interface": true,
     "no-expression-statement": false,
-    "no-if-statement": false
+    "no-if-statement": false,
     /* end tslint-immutable rules */
+
+    "object-literal-sort-keys": false
   }
 }

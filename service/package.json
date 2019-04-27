@@ -34,7 +34,8 @@
     "all": "run-s reset test cov:check doc:html",
     "prepare-release": "run-s all version doc:publish",
     "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('service must be installed with Yarn: https://yarnpkg.com/')\"",
-    "docker": "docker build -t uk.co.grahamcox.wyrdwest/wyrdwest-service:latest ."
+    "docker": "docker build -t uk.co.grahamcox.wyrdwest/wyrdwest-service:latest .",
+    "migrate": "node-pg-migrate"
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
@@ -62,6 +63,7 @@
     "fastify-cors": "^2.1.2",
     "fastify-helmet": "^3.0.0",
     "fastify-sensible": "^2.0.1",
+    "node-pg-migrate": "^3.18.1",
     "pg": "^7.10.0"
   },
   "devDependencies": {

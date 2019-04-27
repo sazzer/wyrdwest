@@ -8,10 +8,11 @@ import buildServer from './server/index';
 /**
  * Main entrypoint into the entire application
  */
-function main(): void {
+async function main(): Promise<void> {
   const config = loadConfig();
 
   const database = new Database(config.get('pg.uri'));
+  await database.migrate();
 
   const handlers: ReadonlyArray<RouteOptions<Server, IncomingMessage, ServerResponse>> = [
     ...buildHealthcheckHandler({
