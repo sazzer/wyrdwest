@@ -10,7 +10,7 @@ export abstract class DatabaseBase implements Database {
 
   /** Query the database, expecting exactly one row */
   public async queryOne(sql: string, ...args: readonly any[]): Promise<Row> {
-    const rows = await this.query(sql, args);
+    const rows = await this.query(sql, ...args);
 
     if (rows.length === 0) {
       // No rows returned

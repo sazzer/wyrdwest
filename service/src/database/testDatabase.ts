@@ -28,7 +28,11 @@ export class TestDatabase extends DatabaseBase {
   }
 
   public async query(sql: string, ...args: readonly any[]): Promise<RowSet> {
-    const result = this.expectations.filter(e => e.sql === sql);
+    const result = this.expectations
+      .filter(e => e.sql === sql)
+      .filter(e => e.binds.length === args.length)
+      .filter(e => JSON.stringify(e.binds) === JSON.stringify(args));
+
     if (result.length === 0) {
       throw new Error(`Unexpected SQL "${sql}" and binds [${args}]`);
     }
