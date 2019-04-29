@@ -57,6 +57,7 @@
     "@types/convict": "^4.2.1",
     "@types/dotenv": "^6.1.1",
     "@types/pg": "^7.4.14",
+    "@types/url-template": "^2.0.28",
     "argon2": "^0.21.0",
     "convict": "^4.4.1",
     "dotenv": "^7.0.0",
@@ -65,7 +66,9 @@
     "fastify-helmet": "^3.0.0",
     "fastify-sensible": "^2.0.1",
     "node-pg-migrate": "^3.18.1",
-    "pg": "^7.10.0"
+    "pg": "^7.10.0",
+    "testdouble": "^3.11.0",
+    "url-template": "^2.0.8"
   },
   "devDependencies": {
     "ava": "1.0.0-beta.7",

@@ -4,6 +4,8 @@ import { loadConfig } from './config';
 import { DatabaseWrapper } from './database/databaseWrapper';
 import { buildHealthcheckHandler } from './healthchecks/handlers';
 import buildServer from './server';
+import { buildUsersDao } from './users/dao/dao';
+import { buildUserHandlers } from './users/http/buildHandlers';
 
 /**
  * Main entrypoint into the entire application
@@ -14,10 +16,11 @@ async function main(): Promise<void> {
   const database = new DatabaseWrapper(config.get('pg.uri'));
   await database.migrate();
 
+  const usersDao = buildUsersDao(database);
+
   const handlers: ReadonlyArray<RouteOptions<Server, IncomingMessage, ServerResponse>> = [
-    ...buildHealthcheckHandler({
-      database
-    })
+    ...buildHealthcheckHandler({ database }),
+    ...buildUserHandlers(usersDao)
   ];
 
   const server = buildServer();
