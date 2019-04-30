@@ -30,7 +30,7 @@ exports.up = (pgm) => {
             type: 'text',
             notNull: false
         }
-    })
+    });
 };
 
 exports.down = (pgm) => {
