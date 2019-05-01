@@ -36,7 +36,7 @@ export class DatabaseWrapper extends DatabaseBase {
   public async migrate(): Promise<void> {
     await pgMigrate({
       checkOrder: true,
-      count: -1,
+      count: Number.MAX_SAFE_INTEGER,
       databaseUrl: this.uri,
       dir: 'migrations',
       direction: 'up',
