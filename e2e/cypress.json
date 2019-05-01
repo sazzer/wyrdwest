@@ -6,5 +6,9 @@
   "screenshotsFolder": "build/out/screenshots",
   "videosFolder": "build/out/videos",
 
-  "ignoreTestFiles": "*.d.ts"
+  "ignoreTestFiles": "*.d.ts",
+
+  "env": {
+    "SERVICE_URI": "http://localhost:38080"
+  }
 }
