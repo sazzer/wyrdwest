@@ -24,7 +24,7 @@
     "all": "run-s reset test cov:check doc:html",
     "prepare-release": "run-s all version doc:publish",
     "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('service must be installed with Yarn: https://yarnpkg.com/')\"",
-    "docker": "docker build -t uk.co.grahamcox.wyrdwest/wyrdwest-service:latest .",
+    "docker": "docker build -t uk.co.grahamcox.wyrdwest/wyrdwest-e2e:latest .",
     "cypress": "cypress open -d"
   },
   "scripts-info": {

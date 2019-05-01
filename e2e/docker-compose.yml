@@ -1,0 +1,28 @@
+version: '3'
+services:
+    wyrdwest-postgres:
+        image: postgres:10.6-alpine
+        environment:
+            POSTGRES_DB: wyrdwest
+            POSTGRES_USER: wyrdwest
+            POSTGRES_PASSWORD: wyrdwest
+        networks:
+            - wyrdwest-e2e
+    wyrdwest-service:
+        image: uk.co.grahamcox.wyrdwest/wyrdwest-service:latest
+        environment:
+            PORT: 8080
+            PG_URI: postgresql://wyrdwest:wyrdwest@wyrdwest-postgres:5432/wyrdwest
+            DOCKERIZE_WAIT: -wait tcp://wyrdwest-postgres:5432
+        networks:
+            - wyrdwest-e2e
+    wyrdwest-e2e:
+        image: uk.co.grahamcox.wyrdwest/wyrdwest-e2e:latest
+        environment:
+            CYPRESS_SERVICE_URI: http://wyrdwest-service:8080
+        networks:
+            - wyrdwest-e2e
+
+networks:
+    wyrdwest-e2e:
+
