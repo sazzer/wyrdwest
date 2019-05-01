@@ -1,0 +1,10 @@
+{
+  "integrationFolder": "build/cypress/integration",
+  "pluginsFile": "build/cypress/plugins/index.js",
+  "supportFile": "build/cypress/support/index.js",
+
+  "screenshotsFolder": "build/out/screenshots",
+  "videosFolder": "build/out/videos",
+
+  "ignoreTestFiles": "*.d.ts"
+}

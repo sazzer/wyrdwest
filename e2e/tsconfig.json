@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "outDir": "build/main",
+    "outDir": "build/cypress",
     "rootDir": "src",
     "moduleResolution": "node",
     "module": "commonjs",
@@ -36,8 +36,9 @@
     // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
 
     "lib": ["es2017"],
-    "types": ["node"],
-    "typeRoots": ["node_modules/@types", "src/types"]
+    "types": ["node", "cypress"],
+    "typeRoots": ["node_modules/@types", "node_modules/cypress/types", "src/types"],
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules/**"],
