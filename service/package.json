@@ -56,6 +56,7 @@
   "dependencies": {
     "@types/convict": "^4.2.1",
     "@types/dotenv": "^6.1.1",
+    "@types/jsonwebtoken": "^8.3.2",
     "@types/pg": "^7.4.14",
     "@types/url-template": "^2.0.28",
     "@types/uuid": "^3.4.4",
@@ -67,6 +68,7 @@
     "fastify-helmet": "^3.0.0",
     "fastify-sensible": "^2.0.1",
     "js-joda": "^1.10.1",
+    "jsonwebtoken": "^8.5.1",
     "node-pg-migrate": "^3.18.1",
     "pg": "^7.10.0",
     "testdouble": "^3.11.0",
