@@ -1,5 +1,6 @@
-import { ClientID } from "../clients/model";
-import { UserID } from "../../users/model";
+import { Instant } from 'js-joda';
+import { UserID } from '../../users/model';
+import { ClientID } from '../clients/model';
 
 /**
  * Type representing the ID of an Access Token
@@ -10,10 +11,10 @@ export type AccessTokenID = string;
  * Type representing an Access Token
  */
 export interface AccessToken {
-  id: AccessTokenID;
-  created: Date;
-  expires: Date;
-  client: ClientID,
-  user: UserID,
-  scopes: string[]
+  readonly id: AccessTokenID;
+  readonly created: Instant;
+  readonly expires: Instant;
+  readonly client: ClientID;
+  readonly user: UserID;
+  readonly scopes?: readonly string[];
 }
