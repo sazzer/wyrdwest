@@ -1,17 +1,27 @@
 import test from 'ava';
-import { Instant } from 'js-joda';
+import { Clock, Instant, ZoneOffset } from 'js-joda';
 import { AccessTokenSerializer } from './accessTokenSerializer';
+import { InvalidAccessTokenError, InvalidAccessTokenReason } from './invalidAccessTokenError';
+
+/** The "current time" */
+const NOW = Instant.parse('2019-05-02T16:59:00Z');
+
+/** The clock to use */
+const CLOCK = Clock.fixed(NOW, ZoneOffset.ofHours(0));
+
+/** The expiry of an access token */
+const EXPIRY = NOW.plusSeconds(3600);
 
 /** The test subject */
-const testSubject = new AccessTokenSerializer('mySecretKey', 'HS512');
+const testSubject = new AccessTokenSerializer(CLOCK, 'mySecretKey', 'HS512');
 
 test('Serialize an access token without scopes', async t => {
   const serialized = await testSubject.serialize({
     id: 'accessTokenId',
     client: 'clientId',
     user: 'userId',
-    created: Instant.parse('2019-05-02T16:59:00Z'),
-    expires: Instant.parse('2019-05-02T17:59:00Z')
+    created: NOW,
+    expires: EXPIRY
   });
 
   t.deepEqual(
@@ -25,8 +35,8 @@ test('Serialize an access token with scopes', async t => {
     id: 'accessTokenId',
     client: 'clientId',
     user: 'userId',
-    created: Instant.parse('2019-05-02T16:59:00Z'),
-    expires: Instant.parse('2019-05-02T17:59:00Z'),
+    created: NOW,
+    expires: EXPIRY,
     scopes: ['admin', 'user']
   });
 
@@ -45,8 +55,8 @@ test('Deserialize an access token without scopes', async t => {
     id: 'accessTokenId',
     client: 'clientId',
     user: 'userId',
-    created: Instant.parse('2019-05-02T16:59:00Z'),
-    expires: Instant.parse('2019-05-02T17:59:00Z'),
+    created: NOW,
+    expires: EXPIRY,
     scopes: undefined
   });
 });
@@ -60,8 +70,65 @@ test('Deserialize an access token with scopes', async t => {
     id: 'accessTokenId',
     client: 'clientId',
     user: 'userId',
-    created: Instant.parse('2019-05-02T16:59:00Z'),
-    expires: Instant.parse('2019-05-02T17:59:00Z'),
+    created: NOW,
+    expires: EXPIRY,
     scopes: ['admin', 'user']
   });
+});
+
+test('Serialize and Deserialize an access token', async t => {
+  const input = {
+    id: 'accessTokenId',
+    client: 'clientId',
+    user: 'userId',
+    created: NOW,
+    expires: EXPIRY,
+    scopes: ['admin', 'user']
+  };
+
+  const serialized = await testSubject.serialize(input);
+
+  const token = await testSubject.deserialize(serialized);
+
+  t.deepEqual(token, input);
+});
+
+test('Deserialize an expired access token', async t => {
+  const input = {
+    id: 'accessTokenId',
+    client: 'clientId',
+    user: 'userId',
+    created: NOW.minusSeconds(7200),
+    expires: EXPIRY.minusSeconds(7200),
+    scopes: ['admin', 'user']
+  };
+
+  const serialized = await testSubject.serialize(input);
+
+  const e = await t.throwsAsync(() => testSubject.deserialize(serialized));
+
+  t.deepEqual(e, new InvalidAccessTokenError(InvalidAccessTokenReason.EXPIRY_IN_PAST));
+});
+
+test('Deserialize an access token created in the future', async t => {
+  const input = {
+    id: 'accessTokenId',
+    client: 'clientId',
+    user: 'userId',
+    created: NOW.plusSeconds(7200),
+    expires: EXPIRY.plusSeconds(7200),
+    scopes: ['admin', 'user']
+  };
+
+  const serialized = await testSubject.serialize(input);
+
+  const e = await t.throwsAsync(() => testSubject.deserialize(serialized));
+
+  t.deepEqual(e, new InvalidAccessTokenError(InvalidAccessTokenReason.CREATED_IN_FUTURE));
+});
+
+test('Deserialize a malformed access token', async t => {
+  const e = await t.throwsAsync(() => testSubject.deserialize('imInvalid'));
+
+  t.deepEqual(e, new InvalidAccessTokenError(InvalidAccessTokenReason.MALFORMED_JWT));
 });
