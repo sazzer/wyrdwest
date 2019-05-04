@@ -27,6 +27,8 @@ async function main(): Promise<void> {
 
   const port = config.get('http.port');
   server.listen(port, () => {
+    // tslint:disable
+    console.log(`Listening on port ${port}`);
   });
 }
 
