@@ -10,9 +10,11 @@ import { buildTokenHandler } from './tokenHandler';
  * Build all the handlers for working with OAuth2
  */
 export function buildOAuth2Handlers(): ReadonlyArray<RouteOptions<Server, IncomingMessage, ServerResponse>> {
-  return [buildTokenHandler({
-    [GrantTypes.AUTHORIZATION_CODE.toString()]: buildAuthorizationCodeTokenHandler(),
-    [GrantTypes.CLIENT_CREDENTIALS.toString()]: buildClientCredentialsTokenHandler(),
-    [GrantTypes.REFRESH_TOKEN.toString()]: buildRefreshTokenHandler()
-  })];
+  return [
+    buildTokenHandler({
+      [GrantTypes.AUTHORIZATION_CODE.toString()]: buildAuthorizationCodeTokenHandler(),
+      [GrantTypes.CLIENT_CREDENTIALS.toString()]: buildClientCredentialsTokenHandler(),
+      [GrantTypes.REFRESH_TOKEN.toString()]: buildRefreshTokenHandler()
+    })
+  ];
 }

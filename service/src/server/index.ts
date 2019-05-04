@@ -1,19 +1,18 @@
-import express from 'express';
-import { Express } from 'express-serve-static-core';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import connectRid from 'connect-rid';
 import cors from 'cors';
 import errorhandler from 'errorhandler';
+import express from 'express';
+import helmet from 'helmet';
 import morgan from 'morgan';
 import responseTime from 'response-time';
-import expressSlash from 'express-slash';
-import helmet from 'helmet';
+import { RouteDefinition } from './routes';
 
 /**
  * Build the HTTP Server to work with
  */
-export default function buildServer(): Express {
+export default function buildServer(handlers: readonly RouteDefinition[]): express.Express {
   const server = express();
 
   server.use(compression());
@@ -24,8 +23,14 @@ export default function buildServer(): Express {
   server.use(errorhandler());
   server.use(morgan('combined'));
   server.use(responseTime());
-  server.use(expressSlash());
   server.use(helmet());
 
+  const router = express.Router();
+
+  handlers.forEach(handler => {
+    router.get(handler.url, handler.handler);
+  });
+
+  server.use(router);
   return server;
 }

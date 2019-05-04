@@ -6,7 +6,7 @@ import { Healthcheck, Status } from './healthcheck';
 function runTest(healthchecks: { readonly [key: string]: Healthcheck }): Promise<HTTPInjectResponse> {
   const server = fastify();
 
-  buildHealthcheckHandler(healthchecks).forEach(handler => server.route(handler));
+  buildHealthcheckHandler(healthchecks);//.forEach(handler => server.route(handler));
 
   return server.inject({
     method: 'GET',
