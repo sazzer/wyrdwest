@@ -1,24 +1,11 @@
-import fastify from 'fastify';
-import fastifyCors from 'fastify-cors';
-import fastifyFormBody from 'fastify-formbody';
-import fastifyHelmet from 'fastify-helmet';
-import fastifySensible from 'fastify-sensible';
-import { IncomingMessage, Server, ServerResponse } from 'http';
+import express from 'express';
+import { Express } from 'express-serve-static-core';
 
-export default function buildServer(): fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> {
-  const server = fastify({
-    logger: true
-  });
-
-  server.register(fastifyCors, {
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'],
-    origin: true,
-    preflightContinue: true
-  });
-  server.register(fastifyHelmet);
-  server.register(fastifySensible);
-  server.register(fastifyFormBody);
+/**
+ * Build the HTTP Server to work with
+ */
+export default function buildServer(): Express {
+  const server = express();
 
   return server;
 }
