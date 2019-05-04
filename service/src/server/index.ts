@@ -7,7 +7,7 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import responseTime from 'response-time';
-import { RouteDefinition } from './routes';
+import { Method, RouteDefinition } from './routes';
 
 /**
  * Build the HTTP Server to work with
@@ -27,8 +27,20 @@ export default function buildServer(handlers: readonly RouteDefinition[]): expre
 
   const router = express.Router();
 
+  const handlerDefinition = {
+    [Method.GET]: router.get.bind(router),
+    [Method.POST]: router.post.bind(router),
+    [Method.PUT]: router.put.bind(router),
+    [Method.PATCH]: router.patch.bind(router),
+    [Method.DELETE]: router.delete.bind(router)
+  };
+
   handlers.forEach(handler => {
-    router.get(handler.url, handler.handler);
+    // tslint:disable
+    console.log(`${handler.method} ${handler.url}`);
+
+    const definitionFunction = handlerDefinition[handler.method];
+    definitionFunction(handler.url, handler.handler);
   });
 
   server.use(router);

@@ -1,44 +1,37 @@
-import { FastifyReply, FastifyRequest, RouteOptions } from 'fastify';
-import { IncomingMessage, Server, ServerResponse } from 'http';
-import { AccessTokenErrorCode, AccessTokenErrorModel, AccessTokenModel } from './model';
-
-export type TokenHandler = (
-  req: FastifyRequest<IncomingMessage>,
-  res: FastifyReply<ServerResponse>
-) => Promise<AccessTokenModel | AccessTokenErrorModel>;
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { Method, RouteDefinition } from '../../server/routes';
+import { AccessTokenErrorCode } from './model';
 
 /**
  * Build the Token Handler to use
  */
-export function buildTokenHandler(handlers: {
-  readonly [grantType: string]: TokenHandler;
-}): RouteOptions<Server, IncomingMessage, ServerResponse> {
+export function buildTokenHandler(handlers: { readonly [grantType: string]: RequestHandler }): RouteDefinition {
   return {
-    async handler(
-      request: FastifyRequest<IncomingMessage>,
-      response: FastifyReply<ServerResponse>
-    ): Promise<AccessTokenModel | AccessTokenErrorModel> {
-      const grantType = (request.body || {}).grant_type;
+    handler: async (req: Request, res: Response, next: NextFunction) => {
+      const grantType = (req.body || {}).grant_type;
 
       if (grantType === undefined || grantType === '') {
-        return {
+        res.status(400);
+        res.json({
           error: AccessTokenErrorCode.INVALID_REQUEST,
           error_description: 'No Grant Type was specified'
-        };
+        });
+        return;
       }
 
       const handler = handlers[grantType];
 
       if (handler) {
-        return handler(request, response);
+        handler(req, res, next);
       } else {
-        return {
+        res.status(400);
+        res.json({
           error: AccessTokenErrorCode.UNSUPPORTED_GRANT_TYPE,
           error_description: `The requested grant type is not supported: ${grantType}`
-        };
+        });
       }
     },
-    method: 'POST',
+    method: Method.POST,
     url: '/oauth2/token'
   };
 }

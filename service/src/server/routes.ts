@@ -4,11 +4,11 @@ import { RequestHandler } from 'express';
  * Enumeration of HTTP Methods that can be supported
  */
 export enum Method {
-  GET,
-  POST,
-  PUT,
-  DELETE,
-  PATCH
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH'
 }
 
 /**

@@ -1,6 +1,7 @@
 import { loadConfig } from './config';
 import { DatabaseWrapper } from './database/databaseWrapper';
 import { buildHealthcheckHandler } from './healthchecks/handlers';
+import { buildOAuth2Handlers } from './oauth2/http/buildHandlers';
 import buildServer from './server';
 import { buildUsersDao } from './users/dao/dao';
 import { buildUserHandlers } from './users/http/buildHandlers';
@@ -18,8 +19,8 @@ async function main(): Promise<void> {
 
   const handlers: ReadonlyArray<any> = [
     ...buildHealthcheckHandler({ database }),
-    ...buildUserHandlers(usersDao)
-    // ...buildOAuth2Handlers()
+    ...buildUserHandlers(usersDao),
+    ...buildOAuth2Handlers()
   ];
 
   const server = buildServer(handlers);
