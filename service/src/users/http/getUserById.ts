@@ -1,48 +1,42 @@
-import { FastifyReply, FastifyRequest, RouteOptions } from 'fastify';
-import { IncomingMessage, Server, ServerResponse } from 'http';
-import { Problem } from '../../problem';
+import { Request, Response } from 'express';
+import { Method, RouteDefinition } from '../../server/routes';
 import { UserRetriever } from '../retriever';
 import { UserNotFoundError } from '../unknownUserError';
-import { translateUserToResponse, UserResponseModel } from './model';
+import { translateUserToResponse } from './model';
 import { SINGLE_ROUTE_URI } from './urls';
 
 /**
  * Handler for retrieving a single User by ID
  * @param userRetriever The means to retrieve users from the database
  */
-export function buildGetUserByIdHandler(
-  userRetriever: UserRetriever
-): RouteOptions<Server, IncomingMessage, ServerResponse> {
+export function buildGetUserByIdHandler(userRetriever: UserRetriever): RouteDefinition {
   return {
-    async handler(
-      request: FastifyRequest<IncomingMessage>,
-      reply: FastifyReply<ServerResponse>
-    ): Promise<UserResponseModel | Problem> {
-      const userId = request.params.userId;
+    async handler(req: Request, res: Response): Promise<void> {
+      const userId = req.params.userId;
 
       try {
         const user = await userRetriever.getUserById(userId);
-        reply.status(200);
-        return translateUserToResponse(user);
+        res.status(200);
+        res.json(translateUserToResponse(user));
       } catch (e) {
         if (e instanceof UserNotFoundError) {
-          reply.status(404);
-          return {
+          res.status(404);
+          res.json({
             type: 'tag:wyrdwest,2019:users/problems/unknown-user',
             title: 'The requested user could not be found',
             status: 404
-          };
+          });
         } else {
-          reply.status(500);
-          return {
+          res.status(500);
+          res.json({
             type: 'tag:wyrdwest,2019:problems/internal-server-error',
             title: 'An unexpected error occurred',
             status: 500
-          };
+          });
         }
       }
     },
-    method: 'GET',
+    method: Method.GET,
     url: SINGLE_ROUTE_URI
   };
 }
