@@ -1,5 +1,6 @@
 import fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
+import fastifyFormBody from 'fastify-formbody';
 import fastifyHelmet from 'fastify-helmet';
 import fastifySensible from 'fastify-sensible';
 import { IncomingMessage, Server, ServerResponse } from 'http';
@@ -17,6 +18,7 @@ export default function buildServer(): fastify.FastifyInstance<Server, IncomingM
   });
   server.register(fastifyHelmet);
   server.register(fastifySensible);
+  server.register(fastifyFormBody);
 
   return server;
 }

@@ -3,6 +3,7 @@ import { IncomingMessage, Server, ServerResponse } from 'http';
 import { loadConfig } from './config';
 import { DatabaseWrapper } from './database/databaseWrapper';
 import { buildHealthcheckHandler } from './healthchecks/handlers';
+import { buildOAuth2Handlers } from './oauth2/http/buildHandlers';
 import buildServer from './server';
 import { buildUsersDao } from './users/dao/dao';
 import { buildUserHandlers } from './users/http/buildHandlers';
@@ -20,7 +21,8 @@ async function main(): Promise<void> {
 
   const handlers: ReadonlyArray<RouteOptions<Server, IncomingMessage, ServerResponse>> = [
     ...buildHealthcheckHandler({ database }),
-    ...buildUserHandlers(usersDao)
+    ...buildUserHandlers(usersDao),
+    ...buildOAuth2Handlers()
   ];
 
   const server = buildServer();

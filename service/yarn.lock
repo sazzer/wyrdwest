@@ -2134,6 +2134,14 @@ fastify-cors@^2.1.2:
     fastify-plugin "^1.5.0"
     vary "^1.1.2"
 
+fastify-formbody@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/fastify-formbody/-/fastify-formbody-3.1.0.tgz#604cdafdb9e3af6068e6d9940985baf692d6e922"
+  integrity sha512-GQQtRmI8w07SMcnXiWrk9H8GAMJwheKAkQS4q0FbJ56Qu8bV39GOffiZ8GLHQmvcJ2B65S+4IAtNjsG6vtMEig==
+  dependencies:
+    fastify-plugin "^1.0.0"
+    qs "^6.5.1"
+
 fastify-helmet@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-3.0.0.tgz#b8e8cf499e46c2b7af605d2f38a5f2c11f530380"
@@ -2155,7 +2163,7 @@ fastify-helmet@^3.0.0:
     referrer-policy "^1.1.0"
     x-xss-protection "^1.1.0"
 
-fastify-plugin@^1.2.1, fastify-plugin@^1.3.0, fastify-plugin@^1.5.0:
+fastify-plugin@^1.0.0, fastify-plugin@^1.2.1, fastify-plugin@^1.3.0, fastify-plugin@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-1.5.0.tgz#4bea12c54112f4749c17f3a1f17356cbdfa661af"
   integrity sha512-bXKSTR4Q1lxERf1p/10Aakga570XtcxCCvPR1gby5js1XOtg7E8UV+aHHEPbGowQGV/KVb7ARBROhPk2I4DfBw==
@@ -4699,6 +4707,11 @@ q@^1.4.1, q@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
+
+qs@^6.5.1:
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
+  integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
 
 query-string@^4.1.0:
   version "4.3.4"

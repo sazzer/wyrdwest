@@ -2,14 +2,14 @@ import { Model } from '../../service';
 import { UserID } from '../../users/model';
 
 /** Enumeration of possible response types */
-enum ResponseTypes {
+export enum ResponseTypes {
   CODE = 'code',
   TOKEN = 'token',
   ID_TOKEN = 'id_token'
 }
 
 /** Enumeration of possible grant types */
-enum GrantTypes {
+export enum GrantTypes {
   AUTHORIZATION_CODE = 'authorization_code',
   IMPLICIT = 'implicit',
   CLIENT_CREDENTIALS = 'client_credentials',
