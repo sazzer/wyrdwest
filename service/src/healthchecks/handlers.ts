@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { Method, RouteDefinition } from '../server/routes';
+import { buildSimpleHandler, SimpleResponse } from '../server/simpleRoute';
 import { Healthcheck, Status } from './healthcheck';
-import { checkHealth } from './healthchecker';
+import { checkHealth, SystemHealth } from './healthchecker';
 
 /**
  * Build the Fastify handler definition for the healthchecks
@@ -12,11 +13,13 @@ export function buildHealthcheckHandler(healthchecks: {
 }): ReadonlyArray<RouteDefinition> {
   return [
     {
-      handler: async function healthcheck(_: Request, res: Response): Promise<void> {
+      handler: buildSimpleHandler(async function healthcheck(_: Request): Promise<SimpleResponse<SystemHealth>> {
         const health = await checkHealth(healthchecks);
-        res.status(health.status === Status.OK ? 200 : 503);
-        res.json(health);
-      },
+
+        const statusCode = health.status === Status.OK ? 200 : 503;
+
+        return new SimpleResponse<SystemHealth>(health, statusCode);
+      }),
       method: Method.GET,
       url: '/health'
     }
