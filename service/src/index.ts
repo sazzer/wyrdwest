@@ -1,5 +1,3 @@
-import { RouteOptions } from 'fastify';
-import { IncomingMessage, Server, ServerResponse } from 'http';
 import { loadConfig } from './config';
 import { DatabaseWrapper } from './database/databaseWrapper';
 import { buildHealthcheckHandler } from './healthchecks/handlers';
@@ -19,20 +17,18 @@ async function main(): Promise<void> {
 
   const usersDao = buildUsersDao(database);
 
-  const handlers: ReadonlyArray<RouteOptions<Server, IncomingMessage, ServerResponse>> = [
+  const handlers: ReadonlyArray<any> = [
     ...buildHealthcheckHandler({ database }),
     ...buildUserHandlers(usersDao),
     ...buildOAuth2Handlers()
   ];
 
-  const server = buildServer();
-  handlers.forEach(handler => server.route(handler));
+  const server = buildServer(handlers);
 
-  server.listen(config.get('http.port'), '::', (err, address) => {
-    if (err) {
-      throw err;
-    }
-    server.log.info(`server listening on ${address}`);
+  const port = config.get('http.port');
+  server.listen(port, () => {
+    // tslint:disable
+    console.log(`Listening on port ${port}`);
   });
 }
 

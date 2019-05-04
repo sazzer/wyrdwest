@@ -1,17 +1,13 @@
 import test from 'ava';
-import fastify, { HTTPInjectResponse } from 'fastify';
+import supertest from 'supertest';
+import buildServer from '../server';
 import { buildHealthcheckHandler } from './handlers';
 import { Healthcheck, Status } from './healthcheck';
 
-function runTest(healthchecks: { readonly [key: string]: Healthcheck }): Promise<HTTPInjectResponse> {
-  const server = fastify();
+function runTest(healthchecks: { readonly [key: string]: Healthcheck }): supertest.Test {
+  const server = buildServer(buildHealthcheckHandler(healthchecks));
 
-  buildHealthcheckHandler(healthchecks).forEach(handler => server.route(handler));
-
-  return server.inject({
-    method: 'GET',
-    url: '/health'
-  });
+  return supertest(server).get('/health');
 }
 
 const passing = {
@@ -33,8 +29,8 @@ const failing = {
 
 test('No Healthchecks', async t => {
   const response = await runTest({});
-  t.deepEqual(response.statusCode, 200);
-  t.deepEqual(JSON.parse(response.payload), {
+  t.deepEqual(response.status, 200);
+  t.deepEqual(response.body, {
     details: {},
     status: 'OK'
   });
@@ -42,8 +38,8 @@ test('No Healthchecks', async t => {
 
 test('One passing Healthcheck', async t => {
   const response = await runTest({ passing });
-  t.deepEqual(response.statusCode, 200);
-  t.deepEqual(JSON.parse(response.payload), {
+  t.deepEqual(response.status, 200);
+  t.deepEqual(response.body, {
     details: {
       passing: {
         detail: 'Success',
@@ -56,8 +52,8 @@ test('One passing Healthcheck', async t => {
 
 test('One failing Healthcheck', async t => {
   const response = await runTest({ failing });
-  t.deepEqual(response.statusCode, 503);
-  t.deepEqual(JSON.parse(response.payload), {
+  t.deepEqual(response.status, 503);
+  t.deepEqual(response.body, {
     details: {
       failing: {
         detail: 'Failure',
@@ -70,8 +66,8 @@ test('One failing Healthcheck', async t => {
 
 test('Mixed Healthchecks', async t => {
   const response = await runTest({ failing, passing });
-  t.deepEqual(response.statusCode, 503);
-  t.deepEqual(JSON.parse(response.payload), {
+  t.deepEqual(response.status, 503);
+  t.deepEqual(response.body, {
     details: {
       failing: {
         detail: 'Failure',

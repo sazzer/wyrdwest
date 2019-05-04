@@ -1,6 +1,7 @@
-import { FastifyReply, FastifyRequest, RouteOptions } from 'fastify';
-import { IncomingMessage, Server, ServerResponse } from 'http';
+import { Request } from 'express';
 import { Problem } from '../../problem';
+import { Method, RouteDefinition } from '../../server/routes';
+import { buildSimpleHandler } from '../../server/simpleRoute';
 import { UserRetriever } from '../retriever';
 import { UserNotFoundError } from '../unknownUserError';
 import { translateUserToResponse, UserResponseModel } from './model';
@@ -10,39 +11,27 @@ import { SINGLE_ROUTE_URI } from './urls';
  * Handler for retrieving a single User by ID
  * @param userRetriever The means to retrieve users from the database
  */
-export function buildGetUserByIdHandler(
-  userRetriever: UserRetriever
-): RouteOptions<Server, IncomingMessage, ServerResponse> {
+export function buildGetUserByIdHandler(userRetriever: UserRetriever): RouteDefinition {
   return {
-    async handler(
-      request: FastifyRequest<IncomingMessage>,
-      reply: FastifyReply<ServerResponse>
-    ): Promise<UserResponseModel | Problem> {
-      const userId = request.params.userId;
+    handler: buildSimpleHandler<UserResponseModel>(async (req: Request) => {
+      const userId = req.params.userId;
 
       try {
         const user = await userRetriever.getUserById(userId);
-        reply.status(200);
         return translateUserToResponse(user);
       } catch (e) {
         if (e instanceof UserNotFoundError) {
-          reply.status(404);
-          return {
-            type: 'tag:wyrdwest,2019:users/problems/unknown-user',
-            title: 'The requested user could not be found',
-            status: 404
-          };
+          throw new Problem(
+            'tag:wyrdwest,2019:users/problems/unknown-user',
+            'The requested user could not be found',
+            404
+          );
         } else {
-          reply.status(500);
-          return {
-            type: 'tag:wyrdwest,2019:problems/internal-server-error',
-            title: 'An unexpected error occurred',
-            status: 500
-          };
+          throw e;
         }
       }
-    },
-    method: 'GET',
+    }),
+    method: Method.GET,
     url: SINGLE_ROUTE_URI
   };
 }

@@ -1,20 +1,14 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { IncomingMessage, ServerResponse } from 'http';
-import { AccessTokenErrorCode, AccessTokenErrorModel, AccessTokenModel } from './model';
+import { Request, RequestHandler, Response } from 'express';
+import { AccessTokenErrorCode } from './model';
 
 /**
  * Build the Token Handler to use for an Authorization Code grant
  */
-export function buildAuthorizationCodeTokenHandler(): (
-  req: FastifyRequest<IncomingMessage>,
-  res: FastifyReply<ServerResponse>
-) => Promise<AccessTokenModel | AccessTokenErrorModel> {
-  return async function handler(
-    _1: FastifyRequest<IncomingMessage>,
-    _2: FastifyReply<ServerResponse>
-  ): Promise<AccessTokenModel | AccessTokenErrorModel> {
-    return {
+export function buildAuthorizationCodeTokenHandler(): RequestHandler {
+  return async function handleAuthorizationCodeToken(_1: Request, res: Response): Promise<void> {
+    res.status(400);
+    res.json({
       error: AccessTokenErrorCode.INVALID_REQUEST
-    };
+    });
   };
 }

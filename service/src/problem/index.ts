@@ -1,10 +1,12 @@
 /**
  * Representation of a Problem as defined by RFC-7807
  */
-export interface Problem {
-  readonly type: string;
-  readonly title: string;
-  readonly status: number;
-  readonly detail?: string;
-  readonly instance?: string;
+export class Problem {
+  constructor(
+    public readonly type: string,
+    public readonly title: string,
+    public readonly status: number,
+    public readonly detail?: string,
+    public readonly instance?: string
+  ) {}
 }
