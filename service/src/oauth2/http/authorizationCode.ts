@@ -1,14 +1,11 @@
-import { Request, RequestHandler, Response } from 'express';
-import { AccessTokenErrorCode } from './model';
+import { TokenHandlerFunction } from './handlers';
+import { AccessTokenErrorCode, AccessTokenErrorModel, AccessTokenModel } from './model';
 
 /**
  * Build the Token Handler to use for an Authorization Code grant
  */
-export function buildAuthorizationCodeTokenHandler(): RequestHandler {
-  return async function handleAuthorizationCodeToken(_1: Request, res: Response): Promise<void> {
-    res.status(400);
-    res.json({
-      error: AccessTokenErrorCode.INVALID_REQUEST
-    });
+export function buildAuthorizationCodeTokenHandler(): TokenHandlerFunction {
+  return async function handleAuthorizationCodeToken(_: { readonly [key: string]: string }): Promise<AccessTokenModel> {
+    throw new AccessTokenErrorModel(AccessTokenErrorCode.UNSUPPORTED_GRANT_TYPE, 'Not yet implemented');
   };
 }

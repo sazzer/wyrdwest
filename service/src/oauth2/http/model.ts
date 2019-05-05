@@ -14,12 +14,19 @@ export enum AccessTokenErrorCode {
   INVALID_GRANT = 'invalid_grant',
   UNAUTHORIZED_CLIENT = 'unauthorized_client',
   UNSUPPORTED_GRANT_TYPE = 'unsupported_grant_type',
-  INVALID_SCOPE = 'invalid_scope'
+  INVALID_SCOPE = 'invalid_scope',
+  ACCESS_DENIED = 'access_denied',
+  UNSUPPORTED_RESPONSE_TYPE = 'unsupported_response_type',
+  SERVER_ERROR = 'server_error',
+  TEMPORARILY_UNAVAILABLE = 'temporarily_unavailable'
 }
 
 /** Representation of an access token error */
-export interface AccessTokenErrorModel {
-  readonly error: AccessTokenErrorCode;
-  readonly error_description?: string;
-  readonly error_uri?: string;
+export class AccessTokenErrorModel {
+  // tslint:disable:variable-name
+  constructor(
+    public readonly error: AccessTokenErrorCode,
+    public readonly error_description?: string,
+    public readonly error_uri?: string
+  ) {}
 }
